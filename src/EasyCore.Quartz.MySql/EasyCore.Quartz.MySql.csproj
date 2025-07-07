@@ -2,14 +2,39 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageIcon>EasyCoreLogo.png</PackageIcon>
+    <PackageReadmeFile>README.en.md</PackageReadmeFile>
+    <IncludeSymbols>False</IncludeSymbols>
+    <RepositoryType>gitee</RepositoryType>
+    <Authors>WZHY</Authors>
+    <Description>.net core EasyCore.Quartz.</Description>
+    <PackageProjectUrl>https://gitee.com/wzhy-0521/easy-core.-quartz.git</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0</Version>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\png\EasyCoreLogo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.en.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EasyCore.Quartz\EasyCore.Quartz.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="9.2.0" />
   </ItemGroup>
