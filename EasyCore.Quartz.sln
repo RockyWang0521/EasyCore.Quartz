@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34601.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EBB87EA1-E998-4F61-AD09-636F0E4FFD96}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{E7371CBC-7A11-48BA-9F1B-48C91D0983CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyCore.Quartz", "src\EasyCore.Quartz\EasyCore.Quartz.csproj", "{82E80344-CF04-4F9B-B499-777D51A48A9D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyCore.Quartz.MySql", "src\EasyCore.Quartz.MySql\EasyCore.Quartz.MySql.csproj", "{5838EE09-C78C-483E-9C2A-67FFBF0950AE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyCore.Quartz.SqlServer", "src\EasyCore.Quartz.SqlServer\EasyCore.Quartz.SqlServer.csproj", "{0AEEC8CE-0F51-40C3-9346-176A5467AB1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.Quartz", "demo\WebApp.Quartz\WebApp.Quartz.csproj", "{C644F426-1D2F-4ECE-8B5C-DF9958C977B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82E80344-CF04-4F9B-B499-777D51A48A9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82E80344-CF04-4F9B-B499-777D51A48A9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82E80344-CF04-4F9B-B499-777D51A48A9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82E80344-CF04-4F9B-B499-777D51A48A9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5838EE09-C78C-483E-9C2A-67FFBF0950AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5838EE09-C78C-483E-9C2A-67FFBF0950AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5838EE09-C78C-483E-9C2A-67FFBF0950AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5838EE09-C78C-483E-9C2A-67FFBF0950AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AEEC8CE-0F51-40C3-9346-176A5467AB1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AEEC8CE-0F51-40C3-9346-176A5467AB1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AEEC8CE-0F51-40C3-9346-176A5467AB1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AEEC8CE-0F51-40C3-9346-176A5467AB1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C644F426-1D2F-4ECE-8B5C-DF9958C977B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C644F426-1D2F-4ECE-8B5C-DF9958C977B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C644F426-1D2F-4ECE-8B5C-DF9958C977B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C644F426-1D2F-4ECE-8B5C-DF9958C977B2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{82E80344-CF04-4F9B-B499-777D51A48A9D} = {EBB87EA1-E998-4F61-AD09-636F0E4FFD96}
+		{5838EE09-C78C-483E-9C2A-67FFBF0950AE} = {EBB87EA1-E998-4F61-AD09-636F0E4FFD96}
+		{0AEEC8CE-0F51-40C3-9346-176A5467AB1A} = {EBB87EA1-E998-4F61-AD09-636F0E4FFD96}
+		{C644F426-1D2F-4ECE-8B5C-DF9958C977B2} = {E7371CBC-7A11-48BA-9F1B-48C91D0983CF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {962867ED-CB87-407F-AEAA-3939593DCE90}
+	EndGlobalSection
+EndGlobal
