@@ -88,117 +88,117 @@ namespace EasyCore.Quartz
                                     sql.TablePrefix = "qrtz_";
                                 });
 
-break;
+                                break;
                         }
 
                         s.UseNewtonsoftJsonSerializer();
 
-s.UseClustering(c =>
-{
-    c.CheckinMisfireThreshold = TimeSpan.FromSeconds(options.CheckinMisfireThreshold);
+                        s.UseClustering(c =>
+                        {
+                            c.CheckinMisfireThreshold = TimeSpan.FromSeconds(options.CheckinMisfireThreshold);
 
-    c.CheckinInterval = TimeSpan.FromSeconds(options.CheckinInterval);
-});
+                            c.CheckinInterval = TimeSpan.FromSeconds(options.CheckinInterval);
+                        });
                     });
                 }
 
                 var rootDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-string[] dllFiles = Directory.GetFiles(rootDirectory, "*.dll", SearchOption.TopDirectoryOnly).Where(path =>
-{
-    string fileName = Path.GetFileName(path);
-    return !(fileName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) || fileName.StartsWith("System.", StringComparison.OrdinalIgnoreCase));
-}).ToArray();
-
-var maxConcurrency = 0;
-
-try
-{
-    foreach (var dllFile in dllFiles)
-    {
-        var assembly = Assembly.LoadFrom(dllFile);
-
-        var jobTypes = assembly.GetTypes()
-        .Where(t => typeof(IEasyCoreJob)
-        .IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface &&
-        t.GetCustomAttribute<EasyCoreCronAttribute>() != null &&
-        t.GetCustomAttribute<EasyCoreDisableJobAttribute>() == null)
-        .ToList();
-
-        foreach (var jobType in jobTypes)
-        {
-            var cronAttr = jobType.GetCustomAttribute<EasyCoreCronAttribute>()!;
-
-            var group = cronAttr.JobGroup ?? "DEFAULT";
-
-            var jobKeyName = cronAttr.JobKey ?? jobType.FullName!;
-
-            var jobKey = new JobKey(jobKeyName, group);
-
-            var triggerKey = new TriggerKey($"{jobKeyName}.trigger", group);
-
-            var wrapperType = typeof(JobWrapper<>).MakeGenericType(jobType);
-
-            var jobDetail = JobBuilder.Create(wrapperType)
-                .WithIdentity(jobKey)
-                .StoreDurably()
-                .RequestRecovery()
-                .Build();
-
-            var trigger = TriggerBuilder.Create()
-                .WithIdentity(triggerKey)
-                .ForJob(jobDetail)
-                .WithCronSchedule(cronAttr.CronExpression, cron =>
+                string[] dllFiles = Directory.GetFiles(rootDirectory, "*.dll", SearchOption.TopDirectoryOnly).Where(path =>
                 {
-                    switch (cronAttr.MisfirePolicy)
+                    string fileName = Path.GetFileName(path);
+                    return !(fileName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) || fileName.StartsWith("System.", StringComparison.OrdinalIgnoreCase));
+                }).ToArray();
+
+                var maxConcurrency = 0;
+
+                try
+                {
+                    foreach (var dllFile in dllFiles)
                     {
-                        case MisfirePolicyType.Ignore:
-                            cron.WithMisfireHandlingInstructionIgnoreMisfires();
-                            break;
+                        var assembly = Assembly.LoadFrom(dllFile);
 
-                        case MisfirePolicyType.FireNow:
-                            cron.WithMisfireHandlingInstructionFireAndProceed();
-                            break;
+                        var jobTypes = assembly.GetTypes()
+                        .Where(t => typeof(IEasyCoreJob)
+                        .IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface &&
+                        t.GetCustomAttribute<EasyCoreCronAttribute>() != null &&
+                        t.GetCustomAttribute<EasyCoreDisableJobAttribute>() == null)
+                        .ToList();
 
-                        case MisfirePolicyType.DoNothing:
-                            cron.WithMisfireHandlingInstructionDoNothing();
-                            break;
+                        foreach (var jobType in jobTypes)
+                        {
+                            var cronAttr = jobType.GetCustomAttribute<EasyCoreCronAttribute>()!;
+
+                            var group = cronAttr.JobGroup ?? "DEFAULT";
+
+                            var jobKeyName = cronAttr.JobKey ?? jobType.FullName!;
+
+                            var jobKey = new JobKey(jobKeyName, group);
+
+                            var triggerKey = new TriggerKey($"{jobKeyName}.trigger", group);
+
+                            var wrapperType = typeof(JobWrapper<>).MakeGenericType(jobType);
+
+                            var jobDetail = JobBuilder.Create(wrapperType)
+                                .WithIdentity(jobKey)
+                                .StoreDurably()
+                                .RequestRecovery()
+                                .Build();
+
+                            var trigger = TriggerBuilder.Create()
+                                .WithIdentity(triggerKey)
+                                .ForJob(jobDetail)
+                                .WithCronSchedule(cronAttr.CronExpression, cron =>
+                                {
+                                    switch (cronAttr.MisfirePolicy)
+                                    {
+                                        case MisfirePolicyType.Ignore:
+                                            cron.WithMisfireHandlingInstructionIgnoreMisfires();
+                                            break;
+
+                                        case MisfirePolicyType.FireNow:
+                                            cron.WithMisfireHandlingInstructionFireAndProceed();
+                                            break;
+
+                                        case MisfirePolicyType.DoNothing:
+                                            cron.WithMisfireHandlingInstructionDoNothing();
+                                            break;
+                                    }
+                                })
+                                .StartNow()
+                                .Build();
+
+
+                            jobsToSchedule.Add((jobDetail, trigger));
+
+                            services.AddTransient(jobType);
+
+                            services.AddTransient(wrapperType);
+
+                            maxConcurrency += jobTypes.Count;
+                        }
                     }
-                })
-                .StartNow()
-                .Build();
+                }
+                catch
+                {
 
+                }
 
-            jobsToSchedule.Add((jobDetail, trigger));
+                q.AddJob<HttpInvokeJob>(opts => opts.StoreDurably());
 
-            services.AddTransient(jobType);
-
-            services.AddTransient(wrapperType);
-
-            maxConcurrency += jobTypes.Count;
-        }
-    }
-}
-catch
-{
-
-}
-
-q.AddJob<HttpInvokeJob>(opts => opts.StoreDurably());
-
-q.UseDefaultThreadPool(tp =>
-{
-    tp.MaxConcurrency = options.MaxConcurrency == 0 ? maxConcurrency : options.MaxConcurrency;
-});
+                q.UseDefaultThreadPool(tp =>
+                {
+                    tp.MaxConcurrency = options.MaxConcurrency == 0 ? maxConcurrency : options.MaxConcurrency;
+                });
             });
 
-services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-services.AddHttpClient("QuartzHttpClient");
+            services.AddHttpClient("QuartzHttpClient");
 
-services.AddSingleton<IEnumerable<(IJobDetail, ITrigger)>>(jobsToSchedule);
+            services.AddSingleton<IEnumerable<(IJobDetail, ITrigger)>>(jobsToSchedule);
 
-services.AddHostedService<QuartzJobSchedulerHostedService>();
+            services.AddHostedService<QuartzJobSchedulerHostedService>();
         }
     }
 }
