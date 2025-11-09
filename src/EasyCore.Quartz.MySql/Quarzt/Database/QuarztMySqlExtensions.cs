@@ -18,7 +18,7 @@ namespace EasyCore.Quartz
         /// A delegate to configure the MySQL connection settings.
         /// If null, the method exits without applying any configuration.
         /// </param>
-        public static void EasyCoreQuarztMySql(this QuarztOptions options, Action<MySqlOptions> action)
+        public static void EasyCoreQuartzMySql(this QuarztOptions options, Action<MySqlOptions> action)
         {
             if (action is null) return;
 

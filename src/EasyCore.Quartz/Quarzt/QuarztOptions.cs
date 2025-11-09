@@ -29,7 +29,7 @@
         /// <summary>
         /// The maximum number of thread pool tasks which can be executing in parallel.
         /// </summary>
-        public int MaxConcurrency { get; set; } = 0;
+        public int MaxConcurrency { get; set; } = 20;
 
         /// <summary>
         /// The time zone offset (in hours) for scheduling jobs, relative to UTC.

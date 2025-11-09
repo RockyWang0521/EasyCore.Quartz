@@ -139,10 +139,12 @@ namespace EasyCore.Quartz
 
                             var wrapperType = typeof(JobWrapper<>).MakeGenericType(jobType);
 
+                            var requestRecovery  =  cronAttr.RequestRecovery;
+
                             var jobDetail = JobBuilder.Create(wrapperType)
                                 .WithIdentity(jobKey)
                                 .StoreDurably()
-                                .RequestRecovery()
+                                .RequestRecovery(requestRecovery)
                                 .Build();
 
                             var trigger = TriggerBuilder.Create()

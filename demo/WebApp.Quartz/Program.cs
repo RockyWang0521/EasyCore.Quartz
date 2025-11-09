@@ -15,14 +15,14 @@ namespace WebApp.Quartz
             // Use EasyCore.Quartz
             builder.Services.EasyCoreQuartz(options =>
             {
-                options.EasyCoreQuarztMySql(mysql =>
+                options.EasyCoreQuartzMySql(mysql =>
                 {
                     mysql.ConnectionString = "server=localhost;port=3307;user id=root;password=123;database=EasyCoreDtm;";
                 });
 
                 options.TimeZoneOffsetHours = +8;
 
-                //options.EasyCoreQuarztSqlServer(sqlserver =>
+                //options.EasyCoreQuartzSqlServer(sqlserver =>
                 //{
                 //    sqlserver.ConnectionString = "Server=192.168.157.142;Database=EasyCoreDtm;User Id=sa;Password=Sa123456;TrustServerCertificate=True;Connect Timeout=10;";
                 //});

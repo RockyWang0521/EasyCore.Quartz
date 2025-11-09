@@ -30,6 +30,11 @@
         public MisfirePolicyType MisfirePolicy { get; set; } = MisfirePolicyType.DoNothing;
 
         /// <summary>
+        /// Whether to request recovery for this job. Default is true.
+        /// </summary>
+        public bool RequestRecovery { get; set; } = true;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="EasyCoreCronAttribute"/> class.
         /// </summary>
         /// <param name="cronExpression">The CRON expression used for scheduling.</param>
