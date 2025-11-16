@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EasyCore Quartz Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">Q</div>
+      <div>
+        <div class="brand-title">EasyCore Quartz</div>
+        <div class="brand-sub">Job Dashboard</div>
+      </div>
+    </div>
+    <nav>
+      <button data-view="overview" class="nav-item active">Overview</button>
+      <button data-view="jobs" class="nav-item">Jobs</button>
+      <button data-view="recurring" class="nav-item">Recurring</button>
+      <button data-view="executing" class="nav-item">Executing</button>
+      <button data-view="http" class="nav-item">HTTP Jobs</button>
+      <button data-view="history" class="nav-item">History</button>
+      <button data-view="servers" class="nav-item">Servers</button>
+    </nav>
+    <div class="sidebar-foot">v9.0.0 · English UI</div>
+  </aside>
+  <main class="content">
+    <header class="topbar">
+      <h1 id="page-title">Overview</h1>
+      <div class="topbar-actions">
+        <button id="btn-refresh" class="btn">Refresh</button>
+        <span id="last-refresh" class="muted"></span>
+      </div>
+    </header>
+    <section id="view-root"></section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <h2 id="modal-title">Dialog</h2>
+      <div id="modal-body"></div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="btn">Cancel</button>
+        <button id="modal-ok" class="btn btn-primary">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

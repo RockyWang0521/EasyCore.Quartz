@@ -1,48 +1,40 @@
-﻿namespace EasyCore.Quartz
+namespace EasyCore.Quartz.Dto;
+
+/// <summary>
+/// Status information for a scheduled job trigger.
+/// </summary>
+public sealed class JobStatusInfoDto
 {
-    /// <summary>
-    /// Represents the status information of a Quartz job.
-    /// </summary>
-    public class JobStatusInfoDto
-    {
-#pragma warning disable CS8618
+    /// <summary>Job name.</summary>
+    public string JobName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the name of the job.
-        /// </summary>
-        public string JobName { get; set; }
+    /// <summary>Job group.</summary>
+    public string Group { get; set; } = "DEFAULT";
 
-        /// <summary>
-        /// Gets or sets the group name of the job.
-        /// </summary>
-        public string Group { get; set; }
+    /// <summary>Trigger key string.</summary>
+    public string TriggerKey { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the key of the trigger associated with the job.
-        /// </summary>
-        public string TriggerKey { get; set; }
+    /// <summary>Quartz trigger state.</summary>
+    public string TriggerState { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the current trigger state.
-        /// Possible values: Normal, Paused, Complete, Error, Blocked, None.
-        /// </summary>
-        public string TriggerState { get; set; }
+    /// <summary>Cron expression, when applicable.</summary>
+    public string? CronExpression { get; set; }
 
-        /// <summary>
-        /// Gets or sets the Cron expression that defines the job's execution schedule.
-        /// </summary>
-        public string? CronExpression { get; set; }
+    /// <summary>Next fire time in the configured display offset.</summary>
+    public DateTimeOffset? NextFireTime { get; set; }
 
-        /// <summary>
-        /// Gets or sets the next scheduled fire time of the trigger.
-        /// </summary>
-        public DateTimeOffset? NextFireTime { get; set; }
+    /// <summary>Previous fire time in the configured display offset.</summary>
+    public DateTimeOffset? PreviousFireTime { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the job is currently executing.
-        /// </summary>
-        public bool IsRunning { get; set; }
+    /// <summary>True when this job is currently executing on this scheduler.</summary>
+    public bool IsCurrentlyExecuting { get; set; }
 
-#pragma warning restore CS8618
-    }
+    /// <summary>Job class full name.</summary>
+    public string? JobType { get; set; }
+
+    /// <summary>Job description.</summary>
+    public string? Description { get; set; }
+
+    /// <summary>Selected JobDataMap entries (string values).</summary>
+    public Dictionary<string, string>? JobData { get; set; }
 }

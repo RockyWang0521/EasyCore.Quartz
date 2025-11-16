@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="420" viewBox="0 0 980 420">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f1419"/>
+      <stop offset="100%" stop-color="#1a2332"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="980" height="420" rx="16" fill="url(#bg)"/>
+  <text x="40" y="42" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="20" font-weight="700">EasyCore.Quartz · Architecture</text>
+  <text x="40" y="66" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="13">Host App ’ DI / Discovery ’ Quartz.NET ’ Management ’ Dashboard &amp; REST</text>
+
+  <rect x="40" y="100" width="160" height="90" rx="12" fill="#243044" stroke="#3d9cf0" stroke-width="2" filter="url(#shadow)"/>
+  <text x="120" y="140" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">ASP.NET Core</text>
+  <text x="120" y="162" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Host / Demo</text>
+
+  <rect x="260" y="90" width="200" height="110" rx="12" fill="#243044" stroke="#3ecf8e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="360" y="125" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">EasyCore.Quartz</text>
+  <text x="360" y="148" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Discovery · JobWrapper</text>
+  <text x="360" y="168" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Management · History</text>
+  <text x="360" y="188" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Dashboard · REST API</text>
+
+  <rect x="520" y="100" width="160" height="90" rx="12" fill="#243044" stroke="#f0b429" stroke-width="2" filter="url(#shadow)"/>
+  <text x="600" y="140" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">Quartz.NET</text>
+  <text x="600" y="162" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Scheduler / Cluster</text>
+
+  <rect x="740" y="70" width="200" height="70" rx="12" fill="#243044" stroke="#3d9cf0" stroke-width="2" filter="url(#shadow)"/>
+  <text x="840" y="100" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">Dashboard</text>
+  <text x="840" y="120" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">/easy-quartz · English UI</text>
+
+  <rect x="740" y="155" width="200" height="70" rx="12" fill="#243044" stroke="#3d9cf0" stroke-width="2" filter="url(#shadow)"/>
+  <text x="840" y="185" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">REST API</text>
+  <text x="840" y="205" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">api/quartz/*</text>
+
+  <text x="40" y="260" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="13">Persistence providers (optional  clustering enabled when configured)</text>
+  <rect x="40" y="280" width="170" height="56" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="125" y="314" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13">MySQL</text>
+  <rect x="230" y="280" width="170" height="56" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="315" y="314" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13">SQL Server</text>
+  <rect x="420" y="280" width="170" height="56" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="505" y="314" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13">PostgreSQL</text>
+  <rect x="610" y="280" width="170" height="56" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="695" y="314" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13">Oracle</text>
+  <rect x="800" y="280" width="140" height="56" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="870" y="314" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13">In-Memory</text>
+
+  <path d="M200 145 H250" stroke="#3d9cf0" stroke-width="2"/>
+  <path d="M460 145 H510" stroke="#f0b429" stroke-width="2"/>
+  <path d="M680 120 H740" stroke="#3d9cf0" stroke-width="2"/>
+  <path d="M680 170 H740" stroke="#3d9cf0" stroke-width="2"/>
+  <path d="M360 200 V270" stroke="#3ecf8e" stroke-width="2"/>
+
+  <text x="40" y="380" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Table prefix QRTZ_ · AutoCreateSchema · Hangfire-style auth · process-local History</text>
+</svg>

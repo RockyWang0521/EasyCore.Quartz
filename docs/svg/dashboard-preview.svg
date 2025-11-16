@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320">
+  <rect width="900" height="320" rx="14" fill="#0f1419"/>
+  <rect x="0" y="0" width="180" height="320" fill="#121a24"/>
+  <text x="20" y="36" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">EasyCore Quartz</text>
+  <text x="20" y="56" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Job Dashboard</text>
+  <rect x="12" y="80" width="156" height="28" rx="6" fill="#243044"/>
+  <text x="24" y="98" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="12">Overview</text>
+  <text x="24" y="132" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Jobs</text>
+  <text x="24" y="158" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Recurring</text>
+  <text x="24" y="184" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Executing</text>
+  <text x="24" y="210" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">HTTP Jobs</text>
+  <text x="24" y="236" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">History</text>
+  <text x="24" y="262" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Servers</text>
+
+  <text x="210" y="40" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="18" font-weight="700">Overview</text>
+  <rect x="210" y="60" width="140" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="224" y="84" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Jobs</text>
+  <text x="224" y="112" fill="#3ecf8e" font-family="Segoe UI, Arial" font-size="22" font-weight="700">12</text>
+  <rect x="365" y="60" width="140" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="379" y="84" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Executing</text>
+  <text x="379" y="112" fill="#3d9cf0" font-family="Segoe UI, Arial" font-size="22" font-weight="700">2</text>
+  <rect x="520" y="60" width="140" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="534" y="84" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Paused</text>
+  <text x="534" y="112" fill="#f0b429" font-family="Segoe UI, Arial" font-size="22" font-weight="700">1</text>
+  <rect x="675" y="60" width="180" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="689" y="84" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Recent Failures</text>
+  <text x="689" y="112" fill="#f07178" font-family="Segoe UI, Arial" font-size="22" font-weight="700">0</text>
+
+  <rect x="210" y="150" width="645" height="140" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="230" y="180" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">Scheduler</text>
+  <text x="230" y="210" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Name: WebApp.Quartz.InMemory</text>
+  <text x="230" y="232" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Store: RAMJobStore / ADO JobStore (QRTZ_)</text>
+  <text x="230" y="254" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Status: Started · English UI · Hangfire-style auth</text>
+</svg>

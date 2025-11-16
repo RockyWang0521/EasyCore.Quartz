@@ -7,28 +7,23 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageIcon>EasyCoreLogo.png</PackageIcon>
     <PackageReadmeFile>README.en.md</PackageReadmeFile>
-    <IncludeSymbols>False</IncludeSymbols>
-    <RepositoryType>gitee</RepositoryType>
     <Authors>WZHY</Authors>
-    <Description>.net core EasyCore.Quartz.</Description>
+    <Description>MySQL persistence provider for EasyCore.Quartz (auto schema bootstrap + clustering).</Description>
     <PackageProjectUrl>https://gitee.com/wzhy-0521/easy-core.-quartz.git</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
-    <AssemblyVersion>8.0.0.0</AssemblyVersion>
-    <FileVersion>8.0.0.0</FileVersion>
-    <Version>8.0.0</Version>
-    <OutputType>Library</OutputType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>9.0.0</Version>
+    <AssemblyVersion>9.0.0.0</AssemblyVersion>
+    <FileVersion>9.0.0.0</FileVersion>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <PackageTags>quartz;mysql;easycore</PackageTags>
+    <RepositoryUrl>https://gitee.com/wzhy-0521/easy-core.-quartz.git</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\png\EasyCoreLogo.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\README.en.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+    <None Include="..\..\png\EasyCoreLogo.png" Pack="True" PackagePath="\" />
+    <None Include="..\..\README.en.md" Pack="True" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

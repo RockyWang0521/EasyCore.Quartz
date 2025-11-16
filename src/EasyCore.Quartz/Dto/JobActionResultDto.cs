@@ -1,29 +1,19 @@
-﻿namespace EasyCore.Quartz.Dto
+namespace EasyCore.Quartz.Dto;
+
+/// <summary>
+/// Result of a job management action.
+/// </summary>
+public sealed class JobActionResultDto
 {
-    /// <summary>
-    /// Represents the result of a job-related operation.
-    /// </summary>
-    public class JobActionResultDto
-    {
-        /// <summary>
-        /// The name of the job.
-        /// </summary>
-        public string JobName { get; set; } = default!;
+    /// <summary>Job name.</summary>
+    public string JobName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// The group to which the job belongs. Default is "DEFAULT".
-        /// </summary>
-        public string Group { get; set; } = "DEFAULT";
+    /// <summary>Job group.</summary>
+    public string Group { get; set; } = "DEFAULT";
 
-        /// <summary>
-        /// Indicates whether the operation was successful.
-        /// </summary>
-        public bool Success { get; set; }
+    /// <summary>Whether the action succeeded.</summary>
+    public bool Success { get; set; }
 
-        /// <summary>
-        /// A message providing additional information about the operation result.
-        /// </summary>
-        public string Message { get; set; } = default!;
-    }
-
+    /// <summary>Human-readable message.</summary>
+    public string Message { get; set; } = string.Empty;
 }

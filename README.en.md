@@ -1,150 +1,513 @@
-# EasyCore.Quartz Project Documentation
+# ⏱️ EasyCore.Quartz
 
-## Introduction
+> **EasyCore.Quartz** is a production-oriented job scheduling library for .NET 8. Built on [Quartz.NET](https://www.quartz-scheduler.net/), it provides attribute-based jobs, a Hangfire-style English dashboard, REST management APIs, dynamic HTTP jobs, and persistence with clustering for MySQL / SQL Server / PostgreSQL / Oracle.
 
-`EasyCore.Quartz` is a task scheduling framework encapsulation based on Quartz, designed to simplify the use of scheduled tasks in .NET projects. It supports triggering tasks via HTTP requests and provides database configuration support for MySQL and SQL Server.
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
+![C#](https://img.shields.io/badge/C%23-12-239120?logo=csharp)
+![Quartz](https://img.shields.io/badge/Quartz.NET-3.14-orange)
+![Dashboard](https://img.shields.io/badge/Dashboard-English-blueviolet)
+![DB](https://img.shields.io/badge/DB-MySQL%20%7C%20SQLServer%20%7C%20PG%20%7C%20Oracle-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Version](https://img.shields.io/badge/Version-9.0.0-blue)
 
-This project is suitable for developers who want to quickly integrate scheduled task scheduling functionality and supports managing task creation, pausing, resuming, and deletion through simple APIs.
+---
 
-## Features
+## 🌍 Language
 
-- Supports executing scheduled tasks via HTTP requests
-- Provides dynamic task management: add, update, pause, resume, and delete
-- Supports multiple database types (MySQL, SQL Server) for task storage
-- Supports Cron expression configuration for scheduled tasks
-- Simple and easy-to-use API controller for task management
-- Supports task concurrency control and error handling
+- Chinese: [README.md](README.md)
+- **English (this document)**
 
-## Installation and Configuration
+---
 
-### 1. Project Structure
+## 📚 Table of Contents
 
-- `src/EasyCore.Quartz`: Core library code containing Quartz encapsulation logic
-- `src/EasyCore.Quartz.MySql` and `src/EasyCore.Quartz.SqlServer`: Database support for MySQL and SQL Server respectively
-- `demo/WebApp.Quartz`: Example web application demonstrating how to use EasyCore.Quartz
+### Part I — Overview & Architecture
+- [1. Positioning](#1-positioning)
+- [2. Architecture](#2-architecture)
+- [3. NuGet Packages](#3-nuget-packages)
+- [4. Database Comparison](#4-database-comparison)
 
-### 2. Configure Database Support
+### Part II — Getting Started
+- [5. Requirements](#5-requirements)
+- [6. Installation](#6-installation)
+- [7. Quick Start (3 minutes)](#7-quick-start-3-minutes)
+- [8. Attributes & Options](#8-attributes--options)
 
-In `QuartzOptions`, you can set the database using the following methods:
+### Part III — Dashboard · REST · HTTP Jobs
+- [9. Dashboard (English UI)](#9-dashboard-english-ui)
+- [10. REST API](#10-rest-api)
+- [11. HTTP Jobs](#11-http-jobs)
 
-```csharp
-options.SetSqlServer("your_sqlserver_connection_string");
-options.SetMySql("your_mysql_connection_string");
+### Part IV — Persistence & Production
+- [12. Database Configuration](#12-database-configuration)
+- [13. Clustering & Concurrency](#13-clustering--concurrency)
+- [14. Demo Projects](#14-demo-projects)
+- [15. Migrating from 8.x](#15-migrating-from-8x)
+- [16. Production Checklist](#16-production-checklist)
+- [17. FAQ](#17-faq)
+- [18. License](#18-license)
+
+---
+
+## 1. Positioning
+
+EasyCore.Quartz makes Quartz easy, operable, and production-safe in ASP.NET Core:
+
+| Pain point | EasyCore.Quartz approach |
+|---|---|
+| Manual job wiring | `IEasyCoreJob` + `[EasyCoreCron]` auto-discovery |
+| No ops UI | Embedded English dashboard (`/easy-quartz`) |
+| Split management APIs | Shared `IJobManagementService` (Dashboard + REST) |
+| Multi-DB persistence | Separate MySQL / SQL Server / PostgreSQL / Oracle packages |
+| Swallowed exceptions | `JobWrapper` logs and **rethrows** |
+| Accidental public exposure | Hangfire-style auth; **deny by default** |
+
+### 1.1 Design Principles
+
+| Principle | Meaning |
+|---|---|
+| **Low friction** | One extension method + one attribute to get running |
+| **Operable** | Full dashboard: Overview / Jobs / History / … |
+| **Pluggable storage** | Core and DB packages are separate |
+| **Failure-aware** | Exceptions propagate; History records outcomes |
+| **Secure by default** | Empty authorization list ⇒ reject dashboard access |
+
+### 1.2 Repository Layout
+
+```text
+EasyCore.Quartz/
+├── src/
+│   ├── EasyCore.Quartz/                 # Core: discovery, management, dashboard, REST
+│   ├── EasyCore.Quartz.MySql/
+│   ├── EasyCore.Quartz.SqlServer/
+│   ├── EasyCore.Quartz.PostgreSql/
+│   └── EasyCore.Quartz.Oracle/
+├── demo/
+│   ├── WebApp.Quartz.Shared/
+│   ├── WebApp.Quartz.InMemory/          # :5101
+│   ├── WebApp.Quartz.MySql/             # :5102
+│   ├── WebApp.Quartz.SqlServer/         # :5103
+│   ├── WebApp.Quartz.PostgreSql/        # :5104
+│   └── WebApp.Quartz.Oracle/            # :5105
+├── tests/EasyCore.Quartz.Tests/
+└── docs/svg/
 ```
 
-### 3. Configure Cron Expressions
+---
 
-Use the `EasyCoreCronAttribute` to set Cron expressions for tasks, for example:
+## 2. Architecture
 
-```csharp
-[EasyCoreCron("0/1 * * * * ?")]
-public class QuartzTask : IEasyCoreJob
+### 2.1 Component Diagram
+
+![architecture-en](docs/svg/architecture-en.svg)
+
+### 2.2 Job Lifecycle
+
+![sequence-en](docs/svg/sequence-en.svg)
+
+### 2.3 Data Flow
+
+```text
+[EasyCoreCron Job]
+       │
+       ▼
+ JobTypeDiscovery ──► JobWrapper<T> ──► Quartz Scheduler
+       │                                      │
+       │                                      ▼
+       │                            JobExecutionHistoryListener
+       │                                      │
+       └──────── IJobManagementService ◄──────┘
+                      │
+           ┌──────────┴──────────┐
+           ▼                     ▼
+     Dashboard UI           REST api/quartz
 ```
 
-## Usage Examples
+---
 
-### Create a Scheduled Task
+## 3. NuGet Packages
+
+| Package | Role | Required |
+|---|---|---|
+| `EasyCore.Quartz` | Core, Dashboard, REST, History | ✅ |
+| `EasyCore.Quartz.MySql` | MySQL store + schema bootstrap | Optional |
+| `EasyCore.Quartz.SqlServer` | SQL Server store + schema bootstrap | Optional |
+| `EasyCore.Quartz.PostgreSql` | PostgreSQL store + schema bootstrap | Optional |
+| `EasyCore.Quartz.Oracle` | Oracle store + schema bootstrap | Optional |
+
+---
+
+## 4. Database Comparison
+
+| Capability | In-Memory | MySQL | SQL Server | PostgreSQL | Oracle |
+|---|---|---|---|---|---|
+| Package | Core only | `.MySql` | `.SqlServer` | `.PostgreSql` | `.Oracle` |
+| Persistence | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Clustering | ❌ | ✅ | ✅ | ✅ | ✅ |
+| AutoCreateSchema | — | ✅ | ✅ | ✅ | ✅ |
+| Table prefix | — | `QRTZ_` | `QRTZ_` | `QRTZ_` | `QRTZ_` |
+| Typical use | Local trial | Common Linux stack | Enterprise Windows | Cloud / open source | Legacy enterprise |
+
+### 4.1 Decision Tree
+
+```text
+Need persistence / multi-node?
+├── No  → In-Memory (WebApp.Quartz.InMemory)
+└── Yes → Pick your existing database
+        ├── MySQL / MariaDB → EasyCore.Quartz.MySql
+        ├── SQL Server → EasyCore.Quartz.SqlServer
+        ├── PostgreSQL → EasyCore.Quartz.PostgreSql
+        └── Oracle → EasyCore.Quartz.Oracle
+```
+
+---
+
+## 5. Requirements
+
+| Item | Requirement |
+|---|---|
+| .NET | 8.0+ |
+| Host | ASP.NET Core (Web / API) |
+| Quartz.NET | 3.14 (brought by core package) |
+| Database | Optional; required only for persistence |
+
+---
+
+## 6. Installation
+
+```bash
+dotnet add package EasyCore.Quartz
+
+# pick one as needed
+dotnet add package EasyCore.Quartz.MySql
+dotnet add package EasyCore.Quartz.SqlServer
+dotnet add package EasyCore.Quartz.PostgreSql
+dotnet add package EasyCore.Quartz.Oracle
+```
+
+---
+
+## 7. Quick Start (3 minutes)
+
+### 7️⃣.1️⃣ Define a job
 
 ```csharp
-[EasyCoreCron("0/1 * * * * ?")]
-public class QuartzTask : IEasyCoreJob
+using EasyCore.Quartz;
+using Quartz;
+
+[EasyCoreCron("0/10 * * * * ?")]
+[EasyCoreDisallowConcurrentExecution]
+public sealed class SampleJob : IEasyCoreJob
 {
-    private readonly ILogger<QuartzTask> _logger;
+    private readonly ILogger<SampleJob> _logger;
+    public SampleJob(ILogger<SampleJob> logger) => _logger = logger;
 
-    public QuartzTask(ILogger<QuartzTask> logger) => _logger = logger;
-
-    public async Task Execute(IJobExecutionContext context)
+    public Task Execute(IJobExecutionContext context)
     {
-        _logger.LogInformation("Scheduled task is executing");
+        _logger.LogInformation("SampleJob running at {Time}", DateTimeOffset.Now);
+        return Task.CompletedTask;
     }
 }
 ```
 
-### Manage Tasks Using the API
-
-`QuartzController` provides RESTful APIs to perform the following operations:
-
-- Get a list of all tasks
-- Pause and resume tasks
-- Update a task's Cron expression
-- Manually trigger a task
-- Add or update an HTTP task
-
-Example: Add an HTTP task
-
-```http
-POST /quartz/addorupdate/httpjob
-{
-    "JobName": "HttpJob",
-    "Url": "http://example.com/api/endpoint",
-    "Method": "POST",
-    "Cron": "0/1 * * * * ?"
-}
-```
-
-### Disable a Task
-
-Use the `EasyCoreDisableJobAttribute` to disable a specific task:
+Disable without deleting code:
 
 ```csharp
 [EasyCoreDisableJob]
-public class DisableJobTask : IEasyCoreJob
-```
-
-## API Documentation
-
-### Get All Tasks
-
-```
-GET /quartz/get/all/jobs
-```
-
-### Pause a Task
-
-```
-PUT /quartz/pause/job?jobName=JobName
-```
-
-### Resume a Task
-
-```
-PUT /quartz/resume/job?jobName=JobName
-```
-
-### Update Task Cron
-
-```
-PUT /quartz/update/cron?jobName=JobName&newCron=0/10 * * * * ?
-```
-
-### Delete a Task
-
-```
-DELETE /quartz/delete/job?jobName=JobName
-```
-
-### Manually Trigger a Task
-
-```
-POST /quartz/manualtrigger/job?jobName=JobName
-```
-
-### Add/Update an HTTP Task
-
-```
-POST /quartz/addorupdate/httpjob
+[EasyCoreCron("0 0 * * * ?")]
+public sealed class DisabledJob : IEasyCoreJob
 {
-    "JobName": "MyHttpJob",
-    "Url": "http://your-endpoint.com",
-    "Method": "GET",
-    "Cron": "0/5 * * * * ?"
+    public Task Execute(IJobExecutionContext context) => Task.CompletedTask;
 }
 ```
 
-## Contribution Guidelines
+### 7️⃣.2️⃣ Register services
 
-We welcome the submission of Issues and Pull Requests. Please ensure that your code style matches the existing code and provide complete unit tests.
+```csharp
+builder.Services.EasyCoreQuartz(options =>
+{
+    options.AddAssemblyFrom<SampleJob>();
+    options.TimeZoneOffsetHours = +8;
+    options.AutoCreateSchema = true;
 
-## License
+    // RAM by default. For persistence, uncomment one:
+    // options.UseMySql(m => m.ConnectionString = "...");
+    // options.UseSqlServer(s => s.ConnectionString = "...");
+    // options.UsePostgreSql(p => p.ConnectionString = "...");
+    // options.UseOracle(o => o.ConnectionString = "...");
+});
+```
 
-This project uses the MIT License. For details, please refer to the [LICENSE](LICENSE) file.
+### 7️⃣.3️⃣ Enable the dashboard
+
+```csharp
+using EasyCore.Quartz.Dashboard;
+
+app.UseEasyCoreQuartzDashboard("/easy-quartz", options =>
+{
+    // Development: loopback only
+    options.Authorization.Add(new LocalRequestsOnlyAuthorizationFilter());
+});
+```
+
+Open: `http://localhost:<port>/easy-quartz`
+
+---
+
+## 8. Attributes & Options
+
+| Attribute / Option | Description |
+|---|---|
+| `IEasyCoreJob` | Marker interface (extends Quartz `IJob`) |
+| `[EasyCoreCron]` | Cron, JobKey, JobGroup, Misfire, RequestRecovery |
+| `[EasyCoreDisableJob]` | Skip auto-registration |
+| `[EasyCoreDisallowConcurrentExecution]` | Prevent overlapping runs |
+| `AddAssembly` / `AddAssemblyFrom<T>` | Explicit discovery |
+| `AutoCreateSchema` | Idempotent DDL on startup (disable in prod) |
+| `HistoryCapacity` | In-memory history size (default 200) |
+| `TablePrefix` | Default `QRTZ_` (must match DDL) |
+| `MaxConcurrency` | Thread pool size; `0` = auto |
+
+---
+
+## 9. Dashboard (English UI)
+
+### 9.1 Preview
+
+![dashboard-preview](docs/svg/dashboard-preview.svg)
+
+### 9.2 Pages
+
+| Page | Icon | Capabilities |
+|---|---|---|
+| **Overview** | 📊 | Scheduler status, job/trigger counts, failure stats |
+| **Jobs** | 📋 | List; Pause / Resume / Trigger / Delete / Edit Cron / Detail |
+| **Recurring** | 🔁 | Cron jobs only |
+| **Executing** | ⚡ | Currently running jobs |
+| **HTTP Jobs** | 🌐 | Create / update HTTP invoke jobs |
+| **History** | 📜 | Recent executions (node-local memory) |
+| **Servers** | 🖥️ | Scheduler name / InstanceId / Store |
+
+> ⚠️ History is a **process-local ring buffer**, not a shared cluster audit log.
+
+### 9.3 Authorization (Hangfire-style)
+
+```csharp
+app.UseEasyCoreQuartzDashboard("/easy-quartz", options =>
+{
+    options.Authorization.Add(new LocalRequestsOnlyAuthorizationFilter());
+    // Production: implement IEasyCoreQuartzAuthorizationFilter for auth/roles
+    // Empty Authorization ⇒ deny all (fail closed)
+});
+```
+
+| Filter | Use case |
+|---|---|
+| `LocalRequestsOnlyAuthorizationFilter` | Local development |
+| `AllowAllAuthorizationFilter` | Trusted private networks only |
+| Custom `IEasyCoreQuartzAuthorizationFilter` | Recommended for production |
+
+---
+
+## 10. REST API
+
+Base path: `api/quartz`
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/overview` | Overview |
+| GET | `/jobs` | All jobs |
+| GET | `/jobs/{group}/{name}` | Job detail |
+| GET | `/recurring` | Cron jobs |
+| GET | `/executing` | Executing jobs |
+| GET | `/history?take=100` | History |
+| PUT | `/jobs/{group}/{name}/pause` | Pause |
+| PUT | `/jobs/{group}/{name}/resume` | Resume |
+| PUT | `/jobs/{group}/{name}/cron?cron=...` | Update cron |
+| DELETE | `/jobs/{group}/{name}` | Delete |
+| POST | `/jobs/{group}/{name}/trigger` | Trigger now |
+| POST | `/http-jobs` | Add/update HTTP job |
+
+---
+
+## 11. HTTP Jobs
+
+Create via Dashboard **HTTP Jobs** or REST:
+
+```json
+{
+  "jobName": "PingApi",
+  "jobGroup": "DEFAULT",
+  "url": "http://localhost:5101/demo/ping",
+  "method": "GET",
+  "cron": "0/30 * * * * ?",
+  "headers": { "X-Trace": "demo" },
+  "body": "",
+  "description": "Health ping"
+}
+```
+
+| Capability | Notes |
+|---|---|
+| Method | `GET` / `POST` / `PUT` / `DELETE` / `PATCH` (case-insensitive) |
+| Body | JSON validated for POST/PUT/PATCH |
+| Failure | Non-2xx ⇒ exception ⇒ History failure |
+
+---
+
+## 12. Database Configuration
+
+All providers use table prefix **`QRTZ_`**.
+
+### 🐬 MySQL
+
+```csharp
+options.UseMySql(mysql =>
+{
+    mysql.ConnectionString =
+        "server=localhost;port=3306;user id=root;password=***;database=EasyCoreQuartz;";
+});
+```
+
+### 🟦 SQL Server
+
+```csharp
+options.UseSqlServer(sql =>
+{
+    sql.ConnectionString =
+        "Server=.;Database=EasyCoreQuartz;User Id=sa;Password=***;TrustServerCertificate=True;";
+});
+```
+
+### 🐘 PostgreSQL
+
+```csharp
+options.UsePostgreSql(pg =>
+{
+    pg.ConnectionString =
+        "Host=localhost;Port=5432;Database=EasyCoreQuartz;Username=postgres;Password=***";
+});
+```
+
+### 🔶 Oracle
+
+```csharp
+options.UseOracle(ora =>
+{
+    ora.ConnectionString =
+        "User Id=quartz;Password=***;Data Source=localhost:1521/ORCL";
+});
+```
+
+### Production DDL tip
+
+```csharp
+options.AutoCreateSchema = false; // disable auto DDL in production
+```
+
+Apply official Quartz scripts (or freeze scripts generated in staging) through your migration pipeline.
+
+---
+
+## 13. Clustering & Concurrency
+
+| Option | Default | Description |
+|---|---|---|
+| `CheckinInterval` | 5s | Cluster check-in interval |
+| `CheckinMisfireThreshold` | 10s | Check-in misfire threshold |
+| `MaxConcurrency` | 20 | Thread pool; `0` = auto |
+
+Configuring any persistent provider **enables Quartz clustering**.
+
+Prevent overlapping execution:
+
+```csharp
+[EasyCoreDisallowConcurrentExecution]
+[EasyCoreCron("0/5 * * * * ?")]
+public sealed class ExclusiveJob : IEasyCoreJob { /* ... */ }
+```
+
+---
+
+## 14. Demo Projects
+
+| Project | Store | Port | Command |
+|---|---|---|---|
+| [`WebApp.Quartz.InMemory`](demo/WebApp.Quartz.InMemory) | RAM | 5101 | `dotnet run --project demo/WebApp.Quartz.InMemory` |
+| [`WebApp.Quartz.MySql`](demo/WebApp.Quartz.MySql) | MySQL | 5102 | `dotnet run --project demo/WebApp.Quartz.MySql` |
+| [`WebApp.Quartz.SqlServer`](demo/WebApp.Quartz.SqlServer) | SQL Server | 5103 | `dotnet run --project demo/WebApp.Quartz.SqlServer` |
+| [`WebApp.Quartz.PostgreSql`](demo/WebApp.Quartz.PostgreSql) | PostgreSQL | 5104 | `dotnet run --project demo/WebApp.Quartz.PostgreSql` |
+| [`WebApp.Quartz.Oracle`](demo/WebApp.Quartz.Oracle) | Oracle | 5105 | `dotnet run --project demo/WebApp.Quartz.Oracle` |
+
+Shared code: [`demo/WebApp.Quartz.Shared`](demo/WebApp.Quartz.Shared)
+
+```bash
+dotnet run --project demo/WebApp.Quartz.InMemory
+# open http://localhost:5101/easy-quartz
+```
+
+For DB demos, update `ConnectionStrings:Quartz` in the corresponding `appsettings.json` first.
+
+---
+
+## 15. Migrating from 8.x
+
+**9.0.0** is a breaking release:
+
+| 8.x | 9.0 |
+|---|---|
+| `QuarztOptions` | `EasyCoreQuartzOptions` |
+| `api/Quarzt` | `api/quartz` |
+| Typo `Quarzt` | Corrected everywhere |
+| Scan all BaseDirectory DLLs | EntryAssembly + `AddAssembly` |
+| Swallowed job exceptions | Log and rethrow |
+| Prefix `qrtz_` | Unified `QRTZ_` |
+| Mixed licenses | **MIT** |
+
+---
+
+## 16. Production Checklist
+
+- [ ] Use a real dashboard auth filter (never `AllowAll` on the public internet)
+- [ ] Set `AutoCreateSchema = false` with reviewed migrations
+- [ ] Keep connection strings in a secret store
+- [ ] Monitor logs and History failure counts
+- [ ] Set `MaxConcurrency` explicitly under heavy load
+- [ ] Validate cron expressions before deploy
+- [ ] Multi-node setups must share the same store and table prefix
+
+---
+
+## 17. FAQ
+
+**Q: Dashboard returns 401?**  
+A: Empty authorization list denies all. Add `LocalRequestsOnlyAuthorizationFilter` for local development.
+
+**Q: Does RAM mode include the dashboard?**  
+A: Yes. Management works with or without persistence in 9.0.
+
+**Q: Why is History different across nodes?**  
+A: History is process-local. Use your logging/audit stack for cross-node history.
+
+**Q: Does default Method=`GET` fail validation?**  
+A: No. Validation is case-insensitive in 9.0.
+
+**Q: How do I scan only my business assembly?**  
+A: `options.AddAssemblyFrom<YourJob>()` or `options.AddAssembly(asm)`.
+
+---
+
+## 18. License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+## 🤝 Contributing
+
+1. Fork and create a feature branch  
+2. Add tests under `tests/EasyCore.Quartz.Tests`  
+3. Run `dotnet test` and `dotnet build EasyCore.Quartz.sln`  
+4. Open a pull request  
+
+Issues and PRs are welcome 🚀

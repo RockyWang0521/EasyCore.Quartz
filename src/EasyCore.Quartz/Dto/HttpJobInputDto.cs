@@ -1,48 +1,31 @@
-﻿namespace EasyCore.Quartz
+namespace EasyCore.Quartz.Dto;
+
+/// <summary>
+/// Input for creating or updating an HTTP job.
+/// </summary>
+public sealed class HttpJobInputDto
 {
-    /// <summary>
-    /// Data Transfer Object representing an HTTP-based job to be scheduled by Quartz.
-    /// </summary>
-    public class HttpJobInputDto
-    {
-#pragma warning disable CS8618 // Disable warning for non-nullable properties not initialized in constructor
+    /// <summary>Unique job name.</summary>
+    public string JobName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// The unique name of the job.
-        /// </summary>
-        public string JobName { get; set; }
+    /// <summary>Job group. Defaults to DEFAULT.</summary>
+    public string JobGroup { get; set; } = "DEFAULT";
 
-        /// <summary>
-        /// The group the job belongs to. Defaults to "DEFAULT".
-        /// </summary>
-        public string JobGroup { get; set; } = "DEFAULT";
+    /// <summary>Target URL.</summary>
+    public string Url { get; set; } = string.Empty;
 
-        /// <summary>
-        /// The target URL that the job will invoke.
-        /// </summary>
-        public string Url { get; set; }
+    /// <summary>HTTP method (GET, POST, PUT, DELETE, PATCH).</summary>
+    public string Method { get; set; } = "GET";
 
-        /// <summary>
-        /// The HTTP method used for the request (e.g., GET, POST, PUT, DELETE). Defaults to "GET".
-        /// </summary>
-        public string Method { get; set; } = "GET";
+    /// <summary>Optional JSON body.</summary>
+    public string? Body { get; set; }
 
-        /// <summary>
-        /// The request body content (typically used for POST or PUT methods).
-        /// </summary>
-        public string Body { get; set; }
+    /// <summary>Optional request headers.</summary>
+    public Dictionary<string, string>? Headers { get; set; }
 
-        /// <summary>
-        /// Optional HTTP headers to include in the request.
-        /// </summary>
-        public Dictionary<string, string>? Headers { get; set; }
+    /// <summary>Cron expression.</summary>
+    public string Cron { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Cron expression that defines the job's schedule.
-        /// </summary>
-        public string Cron { get; set; }
-
-#pragma warning restore CS8618 // Restore nullability warning
-    }
-
+    /// <summary>Optional description.</summary>
+    public string? Description { get; set; }
 }
