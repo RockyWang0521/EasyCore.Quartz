@@ -1,8 +1,7 @@
-using EasyCore.Quartz;
-using Microsoft.Extensions.Logging;
+﻿using EasyCore.Quartz;
 using Quartz;
 
-namespace WebApp.Quartz.Shared.Jobs;
+namespace WebApp.Quartz.Oracle.Jobs;
 
 [EasyCoreCron("0/10 * * * * ?")]
 [EasyCoreDisallowConcurrentExecution]

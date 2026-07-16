@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EasyCore.Quartz;
 
@@ -8,6 +9,7 @@ namespace EasyCore.Quartz;
 public sealed class EasyCoreQuartzOptions
 {
     private readonly List<Assembly> _assemblies = new();
+    private readonly List<Action<IServiceCollection>> _serviceConfigurators = new();
     private string? _connectionString;
     private SqlType _sqlType = SqlType.None;
 
@@ -81,6 +83,23 @@ public sealed class EasyCoreQuartzOptions
 
     /// <summary>Returns the configured connection string, or null for RAM store.</summary>
     public string? GetSqlConnectionString() => _connectionString;
+
+    /// <summary>
+    /// Registers additional DI services from provider packages (e.g. Dashboard).
+    /// </summary>
+    public void AddServiceConfigurator(Action<IServiceCollection> configure)
+    {
+        ArgumentNullException.ThrowIfNull(configure);
+        _serviceConfigurators.Add(configure);
+    }
+
+    internal void ApplyServiceConfigurators(IServiceCollection services)
+    {
+        foreach (var configure in _serviceConfigurators)
+        {
+            configure(services);
+        }
+    }
 
     internal (string? ConnectionString, SqlType SqlType) GetSettings() => (_connectionString, _sqlType);
 }

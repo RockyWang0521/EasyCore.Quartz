@@ -1,4 +1,4 @@
-namespace WebApp.Quartz.Shared.Dto;
+﻿namespace WebApp.Quartz.MySql.Dto;
 
 public sealed class PostDto
 {

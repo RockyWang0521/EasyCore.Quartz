@@ -1,6 +1,5 @@
 using EasyCore.Quartz;
-using EasyCore.Quartz.Dashboard;
-using WebApp.Quartz.Shared.Jobs;
+using WebApp.Quartz.Oracle.Jobs;
 
 namespace WebApp.Quartz.Oracle;
 
@@ -10,8 +9,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers()
-            .AddApplicationPart(typeof(SampleJob).Assembly);
+        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -24,6 +22,12 @@ public class Program
             options.TimeZoneOffsetHours = +8;
             options.AutoCreateSchema = true;
             options.UseOracle(ora => ora.ConnectionString = connectionString);
+            options.EasyCoreQuartzDashboard(dash =>
+            {
+                dash.PathMatch = "/easy-quartz";
+                dash.Username = "admin";
+                dash.Password = "admin123";
+            });
         });
 
         var app = builder.Build();
@@ -33,11 +37,6 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        app.UseEasyCoreQuartzDashboard("/easy-quartz", options =>
-        {
-            options.Authorization.Add(new LocalRequestsOnlyAuthorizationFilter());
-        });
 
         app.MapControllers();
         app.Run();

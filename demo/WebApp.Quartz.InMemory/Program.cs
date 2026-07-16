@@ -1,6 +1,5 @@
 using EasyCore.Quartz;
-using EasyCore.Quartz.Dashboard;
-using WebApp.Quartz.Shared.Jobs;
+using WebApp.Quartz.InMemory.Jobs;
 
 namespace WebApp.Quartz.InMemory;
 
@@ -10,16 +9,21 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers()
-            .AddApplicationPart(typeof(SampleJob).Assembly);
+        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        // In-memory (RAM) job store â€” no database package required.
+        // In-memory (RAM) job store — no database package required.
         builder.Services.EasyCoreQuartz(options =>
         {
             options.AddAssemblyFrom<SampleJob>();
             options.TimeZoneOffsetHours = +8;
+            options.EasyCoreQuartzDashboard(dash =>
+            {
+                dash.PathMatch = "/easy-quartz";
+                dash.Username = "admin";
+                dash.Password = "admin123";
+            });
         });
 
         var app = builder.Build();
@@ -29,11 +33,6 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        app.UseEasyCoreQuartzDashboard("/easy-quartz", options =>
-        {
-            options.Authorization.Add(new LocalRequestsOnlyAuthorizationFilter());
-        });
 
         app.MapControllers();
         app.Run();

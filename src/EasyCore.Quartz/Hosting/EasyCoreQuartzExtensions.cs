@@ -162,6 +162,8 @@ public static class EasyCoreQuartzExtensions
         services.AddHttpClient(HttpInvokeJob.HttpClientName);
         services.AddControllers().AddApplicationPart(typeof(EasyCoreQuartzExtensions).Assembly);
 
+        options.ApplyServiceConfigurators(services);
+
         return services;
     }
 }

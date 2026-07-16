@@ -30,5 +30,5 @@
   <text x="230" y="180" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">Scheduler</text>
   <text x="230" y="210" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Name: WebApp.Quartz.InMemory</text>
   <text x="230" y="232" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Store: RAMJobStore / ADO JobStore (QRTZ_)</text>
-  <text x="230" y="254" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Status: Started · English UI · Hangfire-style auth</text>
+  <text x="230" y="254" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Status: Started · English UI · Basic Auth</text>
 </svg>

@@ -1,6 +1,6 @@
 # ⏱️ EasyCore.Quartz
 
-> **EasyCore.Quartz** is a production-oriented job scheduling library for .NET 8. Built on [Quartz.NET](https://www.quartz-scheduler.net/), it provides attribute-based jobs, a Hangfire-style English dashboard, REST management APIs, dynamic HTTP jobs, and persistence with clustering for MySQL / SQL Server / PostgreSQL / Oracle.
+> **EasyCore.Quartz** is a production-oriented job scheduling library for .NET 8. Built on [Quartz.NET](https://www.quartz-scheduler.net/), it provides attribute-based jobs, an English ops dashboard, REST management APIs, dynamic HTTP jobs, and persistence with clustering for MySQL / SQL Server / PostgreSQL / Oracle.
 
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
 ![C#](https://img.shields.io/badge/C%23-12-239120?logo=csharp)
@@ -56,11 +56,11 @@ EasyCore.Quartz makes Quartz easy, operable, and production-safe in ASP.NET Core
 | Pain point | EasyCore.Quartz approach |
 |---|---|
 | Manual job wiring | `IEasyCoreJob` + `[EasyCoreCron]` auto-discovery |
-| No ops UI | Embedded English dashboard (`/easy-quartz`) |
+| No ops UI | Optional package `EasyCore.Quartz.Dashboard` (`/easy-quartz`) |
 | Split management APIs | Shared `IJobManagementService` (Dashboard + REST) |
 | Multi-DB persistence | Separate MySQL / SQL Server / PostgreSQL / Oracle packages |
 | Swallowed exceptions | `JobWrapper` logs and **rethrows** |
-| Accidental public exposure | Hangfire-style auth; **deny by default** |
+| Accidental public exposure | Dashboard Basic Auth; username/password required |
 
 ### 1.1 Design Principles
 
@@ -77,14 +77,14 @@ EasyCore.Quartz makes Quartz easy, operable, and production-safe in ASP.NET Core
 ```text
 EasyCore.Quartz/
 ├── src/
-│   ├── EasyCore.Quartz/                 # Core: discovery, management, dashboard, REST
+│   ├── EasyCore.Quartz/                 # Core: discovery, management, REST, History
+│   ├── EasyCore.Quartz.Dashboard/       # English ops dashboard
 │   ├── EasyCore.Quartz.MySql/
 │   ├── EasyCore.Quartz.SqlServer/
 │   ├── EasyCore.Quartz.PostgreSql/
 │   └── EasyCore.Quartz.Oracle/
 ├── demo/
-│   ├── WebApp.Quartz.Shared/
-│   ├── WebApp.Quartz.InMemory/          # :5101
+│   ├── WebApp.Quartz.InMemory/          # :5101 — each demo owns SampleJob
 │   ├── WebApp.Quartz.MySql/             # :5102
 │   ├── WebApp.Quartz.SqlServer/         # :5103
 │   ├── WebApp.Quartz.PostgreSql/        # :5104
@@ -129,7 +129,8 @@ EasyCore.Quartz/
 
 | Package | Role | Required |
 |---|---|---|
-| `EasyCore.Quartz` | Core, Dashboard, REST, History | ✅ |
+| `EasyCore.Quartz` | Core, REST, History | ✅ |
+| `EasyCore.Quartz.Dashboard` | English ops dashboard + Basic Auth | Optional |
 | `EasyCore.Quartz.MySql` | MySQL store + schema bootstrap | Optional |
 | `EasyCore.Quartz.SqlServer` | SQL Server store + schema bootstrap | Optional |
 | `EasyCore.Quartz.PostgreSql` | PostgreSQL store + schema bootstrap | Optional |
@@ -177,6 +178,7 @@ Need persistence / multi-node?
 
 ```bash
 dotnet add package EasyCore.Quartz
+dotnet add package EasyCore.Quartz.Dashboard
 
 # pick one as needed
 dotnet add package EasyCore.Quartz.MySql
@@ -221,9 +223,10 @@ public sealed class DisabledJob : IEasyCoreJob
 }
 ```
 
-### 7️⃣.2️⃣ Register services
+### 7️⃣.2️⃣ Register services (including dashboard)
 
 ```csharp
+// Reference EasyCore.Quartz.Dashboard
 builder.Services.EasyCoreQuartz(options =>
 {
     options.AddAssemblyFrom<SampleJob>();
@@ -235,22 +238,19 @@ builder.Services.EasyCoreQuartz(options =>
     // options.UseSqlServer(s => s.ConnectionString = "...");
     // options.UsePostgreSql(p => p.ConnectionString = "...");
     // options.UseOracle(o => o.ConnectionString = "...");
+
+    // Dashboard URL = app base URL + PathMatch
+    // No app.UseEasyCoreQuartzDashboard(...) needed
+    options.EasyCoreQuartzDashboard(dash =>
+    {
+        dash.PathMatch = "/easy-quartz";
+        dash.Username = "admin";
+        dash.Password = "admin123";
+    });
 });
 ```
 
-### 7️⃣.3️⃣ Enable the dashboard
-
-```csharp
-using EasyCore.Quartz.Dashboard;
-
-app.UseEasyCoreQuartzDashboard("/easy-quartz", options =>
-{
-    // Development: loopback only
-    options.Authorization.Add(new LocalRequestsOnlyAuthorizationFilter());
-});
-```
-
-Open: `http://localhost:<port>/easy-quartz`
+Open: `http://localhost:<port>/easy-quartz/` (browser prompts for username/password)
 
 ---
 
@@ -290,22 +290,24 @@ Open: `http://localhost:<port>/easy-quartz`
 
 > ⚠️ History is a **process-local ring buffer**, not a shared cluster audit log.
 
-### 9.3 Authorization (Hangfire-style)
+### 9.3 Authorization (HTTP Basic Auth)
 
 ```csharp
-app.UseEasyCoreQuartzDashboard("/easy-quartz", options =>
+options.EasyCoreQuartzDashboard(dash =>
 {
-    options.Authorization.Add(new LocalRequestsOnlyAuthorizationFilter());
-    // Production: implement IEasyCoreQuartzAuthorizationFilter for auth/roles
-    // Empty Authorization ⇒ deny all (fail closed)
+    dash.PathMatch = "/easy-quartz"; // full URL = app base + this path
+    dash.Username = "admin";         // required
+    dash.Password = "admin123";      // required
 });
 ```
 
-| Filter | Use case |
+| Option | Description |
 |---|---|
-| `LocalRequestsOnlyAuthorizationFilter` | Local development |
-| `AllowAllAuthorizationFilter` | Trusted private networks only |
-| Custom `IEasyCoreQuartzAuthorizationFilter` | Recommended for production |
+| `PathMatch` | Relative path (default `/easy-quartz`) |
+| `Username` / `Password` | Basic Auth credentials (required; middleware auto-mounted) |
+| `BasicAuthAuthorizationFilter` | Enabled by default |
+| `LocalRequestsOnlyAuthorizationFilter` | Optional; append to `dash.Authorization` |
+| Custom `IEasyCoreQuartzAuthorizationFilter` | Replace or stack for production |
 
 ---
 
@@ -439,7 +441,7 @@ public sealed class ExclusiveJob : IEasyCoreJob { /* ... */ }
 | [`WebApp.Quartz.PostgreSql`](demo/WebApp.Quartz.PostgreSql) | PostgreSQL | 5104 | `dotnet run --project demo/WebApp.Quartz.PostgreSql` |
 | [`WebApp.Quartz.Oracle`](demo/WebApp.Quartz.Oracle) | Oracle | 5105 | `dotnet run --project demo/WebApp.Quartz.Oracle` |
 
-Shared code: [`demo/WebApp.Quartz.Shared`](demo/WebApp.Quartz.Shared)
+Each demo has its own `Jobs/SampleJob.cs` — open and edit locally, no cross-project reference.
 
 ```bash
 dotnet run --project demo/WebApp.Quartz.InMemory
@@ -468,7 +470,7 @@ For DB demos, update `ConnectionStrings:Quartz` in the corresponding `appsetting
 
 ## 16. Production Checklist
 
-- [ ] Use a real dashboard auth filter (never `AllowAll` on the public internet)
+- [ ] Use a strong dashboard password (never ship demo credentials publicly)
 - [ ] Set `AutoCreateSchema = false` with reviewed migrations
 - [ ] Keep connection strings in a secret store
 - [ ] Monitor logs and History failure counts
@@ -481,10 +483,10 @@ For DB demos, update `ConnectionStrings:Quartz` in the corresponding `appsetting
 ## 17. FAQ
 
 **Q: Dashboard returns 401?**  
-A: Empty authorization list denies all. Add `LocalRequestsOnlyAuthorizationFilter` for local development.
+A: The browser prompts for Basic Auth. Use the configured `Username` / `Password`. Enabling the dashboard without credentials throws at startup.
 
 **Q: Does RAM mode include the dashboard?**  
-A: Yes. Management works with or without persistence in 9.0.
+A: Yes. Reference `EasyCore.Quartz.Dashboard` and call `options.EasyCoreQuartzDashboard(...)`.
 
 **Q: Why is History different across nodes?**  
 A: History is process-local. Use your logging/audit stack for cross-node history.

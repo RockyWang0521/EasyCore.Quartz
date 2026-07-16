@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 namespace EasyCore.Quartz.Dashboard;
 
 /// <summary>
-/// Authorization filter for the EasyCore Quartz dashboard (Hangfire-style).
+/// Authorization filter for the EasyCore Quartz dashboard.
 /// </summary>
 public interface IEasyCoreQuartzAuthorizationFilter
 {

@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using EasyCore.Quartz.Dto;
 using EasyCore.Quartz.Management;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -48,7 +47,12 @@ public sealed class EasyCoreQuartzDashboardMiddleware
         if (_options.Authorization.Count == 0 || !_options.Authorization.All(f => f.Authorize(context)))
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync("Unauthorized EasyCore Quartz dashboard request.").ConfigureAwait(false);
+            if (!context.Response.HasStarted)
+            {
+                await context.Response.WriteAsync("Unauthorized EasyCore Quartz dashboard request.")
+                    .ConfigureAwait(false);
+            }
+
             return;
         }
 
@@ -56,6 +60,14 @@ public sealed class EasyCoreQuartzDashboardMiddleware
         if (string.IsNullOrEmpty(path))
         {
             path = "/";
+        }
+
+        // Ensure trailing slash so relative asset URLs (css/, js/) resolve correctly.
+        if ((path is "/" or "") && !(context.Request.Path.Value?.EndsWith('/') ?? false))
+        {
+            var redirect = (_pathMatch.Value ?? "/easy-quartz").TrimEnd('/') + "/";
+            context.Response.Redirect(redirect, permanent: false);
+            return;
         }
 
         if (path.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
@@ -217,28 +229,48 @@ public sealed class EasyCoreQuartzDashboardMiddleware
     {
         if (path is "/" or "/index.html")
         {
-            await WriteEmbeddedAsync(context, "Dashboard.wwwroot.index.html", "text/html; charset=utf-8")
-                .ConfigureAwait(false);
+            await WriteEmbeddedHtmlAsync(context).ConfigureAwait(false);
             return;
         }
 
         if (path.Equals("/css/dashboard.css", StringComparison.OrdinalIgnoreCase))
         {
-            await WriteEmbeddedAsync(context, "Dashboard.wwwroot.css.dashboard.css", "text/css; charset=utf-8")
+            await WriteEmbeddedAsync(context, "wwwroot.css.dashboard.css", "text/css; charset=utf-8")
                 .ConfigureAwait(false);
             return;
         }
 
         if (path.Equals("/js/dashboard.js", StringComparison.OrdinalIgnoreCase))
         {
-            await WriteEmbeddedAsync(context, "Dashboard.wwwroot.js.dashboard.js", "application/javascript; charset=utf-8")
+            await WriteEmbeddedAsync(context, "wwwroot.js.dashboard.js", "application/javascript; charset=utf-8")
                 .ConfigureAwait(false);
             return;
         }
 
-        // SPA fallback
-        await WriteEmbeddedAsync(context, "Dashboard.wwwroot.index.html", "text/html; charset=utf-8")
-            .ConfigureAwait(false);
+        await WriteEmbeddedHtmlAsync(context).ConfigureAwait(false);
+    }
+
+    private async Task WriteEmbeddedHtmlAsync(HttpContext context)
+    {
+        var resourceName = $"{_assembly.GetName().Name}.wwwroot.index.html";
+        await using var stream = _assembly.GetManifestResourceStream(resourceName);
+        if (stream is null)
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync($"Embedded resource not found: {resourceName}").ConfigureAwait(false);
+            return;
+        }
+
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        var html = await reader.ReadToEndAsync().ConfigureAwait(false);
+        var basePath = (_pathMatch.Value ?? "/easy-quartz").TrimEnd('/') + "/";
+        html = html
+            .Replace("__BASE__", basePath, StringComparison.Ordinal)
+            .Replace("__TITLE__", _options.DashboardTitle, StringComparison.Ordinal)
+            .Replace("__APP__", _options.AppPath, StringComparison.Ordinal);
+
+        context.Response.ContentType = "text/html; charset=utf-8";
+        await context.Response.WriteAsync(html, Encoding.UTF8).ConfigureAwait(false);
     }
 
     private async Task WriteEmbeddedAsync(HttpContext context, string relativeName, string contentType)
@@ -260,39 +292,5 @@ public sealed class EasyCoreQuartzDashboardMiddleware
     {
         context.Response.ContentType = "application/json; charset=utf-8";
         return context.Response.WriteAsync(JsonSerializer.Serialize(payload, JsonOptions), Encoding.UTF8);
-    }
-}
-
-/// <summary>
-/// Extension methods to map the EasyCore Quartz dashboard.
-/// </summary>
-public static class EasyCoreQuartzDashboardExtensions
-{
-    /// <summary>
-    /// Maps the Hangfire-style English dashboard at the given path (default <c>/easy-quartz</c>).
-    /// </summary>
-    public static IApplicationBuilder UseEasyCoreQuartzDashboard(
-        this IApplicationBuilder app,
-        string pathMatch = "/easy-quartz",
-        Action<DashboardOptions>? configure = null)
-    {
-        ArgumentNullException.ThrowIfNull(app);
-
-        var options = new DashboardOptions();
-        configure?.Invoke(options);
-
-        if (options.Authorization.Count == 0)
-        {
-            // Fail closed unless the host explicitly adds filters.
-            // Development hosts typically add LocalRequestsOnlyAuthorizationFilter.
-        }
-
-        pathMatch = string.IsNullOrWhiteSpace(pathMatch) ? "/easy-quartz" : pathMatch;
-        if (!pathMatch.StartsWith('/'))
-        {
-            pathMatch = "/" + pathMatch;
-        }
-
-        return app.UseMiddleware<EasyCoreQuartzDashboardMiddleware>(new PathString(pathMatch), options);
     }
 }

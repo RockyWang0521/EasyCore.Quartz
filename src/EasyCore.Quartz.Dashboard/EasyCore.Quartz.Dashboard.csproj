@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageIcon>EasyCoreLogo.png</PackageIcon>
+    <PackageReadmeFile>README.en.md</PackageReadmeFile>
+    <Authors>WZHY</Authors>
+    <Description>English ops dashboard for EasyCore.Quartz with Basic Auth and auto middleware mounting.</Description>
+    <PackageProjectUrl>https://gitee.com/wzhy-0521/easy-core.-quartz.git</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyVersion>8.0.0.0</AssemblyVersion>
+    <FileVersion>8.0.1.0</FileVersion>
+    <Version>8.0.0</Version>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <PackageTags>quartz;dashboard;easycore;aspnetcore</PackageTags>
+    <RepositoryUrl>https://gitee.com/wzhy-0521/easy-core.-quartz.git</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\png\EasyCoreLogo.png" Pack="True" PackagePath="\" />
+    <None Include="..\..\README.en.md" Pack="True" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EasyCore.Quartz\EasyCore.Quartz.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\index.html" LogicalName="EasyCore.Quartz.Dashboard.wwwroot.index.html" />
+    <EmbeddedResource Include="wwwroot\css\dashboard.css" LogicalName="EasyCore.Quartz.Dashboard.wwwroot.css.dashboard.css" />
+    <EmbeddedResource Include="wwwroot\js\dashboard.js" LogicalName="EasyCore.Quartz.Dashboard.wwwroot.js.dashboard.js" />
+  </ItemGroup>
+
+</Project>

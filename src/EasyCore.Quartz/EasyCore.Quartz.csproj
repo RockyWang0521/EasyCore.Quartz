@@ -10,18 +10,18 @@
     <IncludeSymbols>False</IncludeSymbols>
     <RepositoryType>gitee</RepositoryType>
     <Authors>WZHY</Authors>
-    <Description>Production-ready Quartz.NET wrapper with attribute jobs, REST API, Hangfire-style English dashboard, and multi-database persistence.</Description>
+    <Description>Production-ready Quartz.NET wrapper with attribute jobs, REST API, multi-database persistence, and optional English ops dashboard package.</Description>
     <PackageProjectUrl>https://gitee.com/wzhy-0521/easy-core.-quartz.git</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <AssemblyVersion>9.0.0.0</AssemblyVersion>
-    <FileVersion>9.0.0.0</FileVersion>
-    <Version>9.0.0</Version>
+    <AssemblyVersion>8.0.0.0</AssemblyVersion>
+    <FileVersion>8.0.1.0</FileVersion>
+    <Version>8.0.0</Version>
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <PackageTags>quartz;scheduling;jobs;hangfire;dashboard;aspnetcore;mysql;sqlserver;postgresql;oracle</PackageTags>
+    <PackageTags>quartz;scheduling;jobs;dashboard;aspnetcore;mysql;sqlserver;postgresql;oracle</PackageTags>
     <RepositoryUrl>https://gitee.com/wzhy-0521/easy-core.-quartz.git</RepositoryUrl>
   </PropertyGroup>
 
@@ -34,12 +34,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Dashboard\wwwroot\index.html" LogicalName="EasyCore.Quartz.Dashboard.wwwroot.index.html" />
-    <EmbeddedResource Include="Dashboard\wwwroot\css\dashboard.css" LogicalName="EasyCore.Quartz.Dashboard.wwwroot.css.dashboard.css" />
-    <EmbeddedResource Include="Dashboard\wwwroot\js\dashboard.js" LogicalName="EasyCore.Quartz.Dashboard.wwwroot.js.dashboard.js" />
   </ItemGroup>
 
   <ItemGroup>

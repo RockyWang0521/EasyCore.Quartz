@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using WebApp.Quartz.Shared.Dto;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApp.Quartz.PostgreSql.Dto;
 
-namespace WebApp.Quartz.Shared.Controllers;
+namespace WebApp.Quartz.PostgreSql.Controllers;
 
 [ApiController]
 [Route("demo")]

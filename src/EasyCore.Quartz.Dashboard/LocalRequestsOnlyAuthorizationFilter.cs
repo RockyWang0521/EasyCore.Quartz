@@ -4,7 +4,7 @@ namespace EasyCore.Quartz.Dashboard;
 
 /// <summary>
 /// Allows dashboard access only from loopback addresses.
-/// Suitable for local development.
+/// Suitable for local development (optional, not used by default).
 /// </summary>
 public sealed class LocalRequestsOnlyAuthorizationFilter : IEasyCoreQuartzAuthorizationFilter
 {
