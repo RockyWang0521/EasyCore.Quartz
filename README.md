@@ -15,7 +15,7 @@
 ## 🌍 Language
 
 - **中文（当前文档）**
-- English: [README.en.md](README.en.md)
+- English: [README.en.md](https://github.com/RockyWang0521/EasyCore.Quartz/blob/master/README.en.md)
 
 ---
 
@@ -99,11 +99,11 @@ EasyCore.Quartz/
 
 ### 2.1 组件关系图
 
-![architecture-cn](https://gitee.com/wzhy-0521/easy-core.-quartz/tree/master/docs/svg/architecture-cn.svg)
+![architecture-cn](https://github.com/RockyWang0521/EasyCore.Quartz/blob/master/docs/svg/architecture-cn.svg)
 
 ### 2.2 任务生命周期
 
-![sequence-cn](https://gitee.com/wzhy-0521/easy-core.-quartz/tree/master/docs/svg/sequence-cn.svg)
+![sequence-cn](https://github.com/RockyWang0521/EasyCore.Quartz/blob/master/docs/svg/sequence-cn.svg)
 
 ### 2.3 数据流（文字版）
 
@@ -277,7 +277,7 @@ builder.Services.EasyCoreQuartz(options =>
 
 ### 9.1 预览
 
-![dashboard-preview](https://gitee.com/wzhy-0521/easy-core.-quartz/tree/master/docs/svg/dashboard-preview.svg)
+![dashboard-preview](https://github.com/RockyWang0521/EasyCore.Quartz/blob/master/docs/svg/dashboard-preview.svg)
 
 ### 9.2 页面能力
 
