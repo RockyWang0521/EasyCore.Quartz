@@ -8,7 +8,7 @@
 ![Dashboard](https://img.shields.io/badge/Dashboard-English-blueviolet)
 ![DB](https://img.shields.io/badge/DB-MySQL%20%7C%20SQLServer%20%7C%20PG%20%7C%20Oracle-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/Version-8.0.0-blue)
+![Version](https://img.shields.io/badge/Version-8.3.0-blue)
 
 ---
 
@@ -227,7 +227,7 @@ public sealed class DisabledJob : IEasyCoreJob
 
 ```csharp
 // Reference EasyCore.Quartz.Dashboard
-builder.Services.EasyCoreQuartz(options =>
+builder.Services.AddEasyCoreQuartz(options =>
 {
     options.AddAssemblyFrom<SampleJob>();
     options.TimeZoneOffsetHours = +8;
@@ -241,7 +241,7 @@ builder.Services.EasyCoreQuartz(options =>
 
     // Dashboard URL = app base URL + PathMatch
     // No app.UseEasyCoreQuartzDashboard(...) needed
-    options.EasyCoreQuartzDashboard(dash =>
+    options.UseEasyCoreQuartzDashboard(dash =>
     {
         dash.PathMatch = "/easy-quartz";
         dash.Username = "admin";
@@ -296,7 +296,7 @@ Open: `http://localhost:<port>/easy-quartz/` (browser prompts for username/passw
 ### 9.3 Authorization (HTTP Basic Auth)
 
 ```csharp
-options.EasyCoreQuartzDashboard(dash =>
+options.UseEasyCoreQuartzDashboard(dash =>
 {
     dash.PathMatch = "/easy-quartz"; // full URL = app base + this path
     dash.Username = "admin";         // required
@@ -499,7 +499,7 @@ For DB demos, update `ConnectionStrings:Quartz` in the corresponding `appsetting
 A: The browser prompts for Basic Auth. Use the configured `Username` / `Password`. Enabling the dashboard without credentials throws at startup.
 
 **Q: Does RAM mode include the dashboard?**  
-A: Yes. Reference `EasyCore.Quartz.Dashboard` and call `options.EasyCoreQuartzDashboard(...)`.
+A: Yes. Reference `EasyCore.Quartz.Dashboard` and call `options.UseEasyCoreQuartzDashboard(...)`.
 
 **Q: Why is History different across nodes?**  
 A: History is a process-local ring buffer; Overview success/failure counts cover the current window only. Use your logging/audit stack for cross-node history.

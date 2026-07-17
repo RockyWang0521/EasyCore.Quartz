@@ -14,7 +14,7 @@ public class SchedulerIntegrationTests
         using var host = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.EasyCoreQuartz(options =>
+                services.AddEasyCoreQuartz(options =>
                 {
                     options.AddAssemblyFrom<IntegrationSampleJob>();
                     options.HistoryCapacity = 50;

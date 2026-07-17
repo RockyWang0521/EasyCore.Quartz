@@ -13,12 +13,12 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        // In-memory (RAM) job store — no database package required.
-        builder.Services.EasyCoreQuartz(options =>
+        // In-memory (RAM) job store ï¿½ no database package required.
+        builder.Services.AddEasyCoreQuartz(options =>
         {
             options.AddAssemblyFrom<SampleJob>();
             options.TimeZoneOffsetHours = +8;
-            options.EasyCoreQuartzDashboard(dash =>
+            options.UseEasyCoreQuartzDashboard(dash =>
             {
                 dash.PathMatch = "/easy-quartz";
                 dash.Username = "admin";

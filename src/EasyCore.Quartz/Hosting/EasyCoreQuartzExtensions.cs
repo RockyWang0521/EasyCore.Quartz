@@ -18,7 +18,7 @@ public static class EasyCoreQuartzExtensions
     /// <summary>
     /// Registers Quartz with EasyCore job discovery, management services, and history.
     /// </summary>
-    public static IServiceCollection EasyCoreQuartz(
+    public static IServiceCollection AddEasyCoreQuartz(
         this IServiceCollection services,
         Action<EasyCoreQuartzOptions>? configureOptions = null)
     {

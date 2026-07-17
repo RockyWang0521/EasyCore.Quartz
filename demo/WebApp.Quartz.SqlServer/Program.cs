@@ -16,13 +16,13 @@ public class Program
         var connectionString = builder.Configuration.GetConnectionString("Quartz")
             ?? throw new InvalidOperationException("ConnectionStrings:Quartz is required for the SQL Server demo.");
 
-        builder.Services.EasyCoreQuartz(options =>
+        builder.Services.AddEasyCoreQuartz(options =>
         {
             options.AddAssemblyFrom<SampleJob>();
             options.TimeZoneOffsetHours = +8;
             options.AutoCreateSchema = true;
             options.UseSqlServer(sql => sql.ConnectionString = connectionString);
-            options.EasyCoreQuartzDashboard(dash =>
+            options.UseEasyCoreQuartzDashboard(dash =>
             {
                 dash.PathMatch = "/easy-quartz";
                 dash.Username = "admin";

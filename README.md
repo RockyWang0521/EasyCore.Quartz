@@ -8,7 +8,7 @@
 ![Dashboard](https://img.shields.io/badge/Dashboard-English-blueviolet)
 ![DB](https://img.shields.io/badge/DB-MySQL%20%7C%20SQLServer%20%7C%20PG%20%7C%20Oracle-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/Version-8.0.0-blue)
+![Version](https://img.shields.io/badge/Version-8.3.0-blue)
 
 ---
 
@@ -227,7 +227,7 @@ public sealed class DisabledJob : IEasyCoreJob
 
 ```csharp
 // 引用 EasyCore.Quartz.Dashboard
-builder.Services.EasyCoreQuartz(options =>
+builder.Services.AddEasyCoreQuartz(options =>
 {
     options.AddAssemblyFrom<SampleJob>();
     options.TimeZoneOffsetHours = +8;
@@ -241,7 +241,7 @@ builder.Services.EasyCoreQuartz(options =>
 
     // Dashboard：访问地址 = 当前 App 根地址 + PathMatch
     // 无需再写 app.UseEasyCoreQuartzDashboard(...)
-    options.EasyCoreQuartzDashboard(dash =>
+    options.UseEasyCoreQuartzDashboard(dash =>
     {
         dash.PathMatch = "/easy-quartz";
         dash.Username = "admin";
@@ -296,7 +296,7 @@ builder.Services.EasyCoreQuartz(options =>
 ### 9.3 鉴权（HTTP Basic Auth）
 
 ```csharp
-options.EasyCoreQuartzDashboard(dash =>
+options.UseEasyCoreQuartzDashboard(dash =>
 {
     dash.PathMatch = "/easy-quartz"; // 完整 URL = App 根地址 + 该路径
     dash.Username = "admin";         // 必填
@@ -503,7 +503,7 @@ dotnet run --project demo/WebApp.Quartz.InMemory
 A: 浏览器会弹出 Basic Auth。使用配置的 `Username` / `Password` 登录。未配置账号密码时启用 Dashboard 会在启动时抛错。
 
 **Q: 内存模式有 Dashboard 吗？**  
-A: 有。引用 `EasyCore.Quartz.Dashboard` 并调用 `options.EasyCoreQuartzDashboard(...)` 即可。
+A: 有。引用 `EasyCore.Quartz.Dashboard` 并调用 `options.UseEasyCoreQuartzDashboard(...)` 即可。
 
 **Q: History 为什么节点间不一致？**  
 A: History 是进程内环形缓冲；Overview 成功/失败数只统计当前窗口内的记录。跨节点请依赖日志系统或自建审计。

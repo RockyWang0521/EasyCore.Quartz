@@ -13,7 +13,7 @@ public static class EasyCoreQuartzDashboardOptionsExtensions
     /// Enables the EasyCore Quartz dashboard. Path is relative to the host app base URL.
     /// Username and password are required (HTTP Basic Auth). Middleware is mounted automatically.
     /// </summary>
-    public static EasyCoreQuartzOptions EasyCoreQuartzDashboard(
+    public static EasyCoreQuartzOptions UseEasyCoreQuartzDashboard(
         this EasyCoreQuartzOptions options,
         Action<DashboardOptions> configure)
     {
@@ -26,7 +26,7 @@ public static class EasyCoreQuartzDashboardOptionsExtensions
         if (string.IsNullOrWhiteSpace(dash.Username) || string.IsNullOrWhiteSpace(dash.Password))
         {
             throw new ArgumentException(
-                "Dashboard Username and Password are required. Configure them via EasyCoreQuartzDashboard(...).",
+                "Dashboard Username and Password are required. Configure them via UseEasyCoreQuartzDashboard(...).",
                 nameof(configure));
         }
 
