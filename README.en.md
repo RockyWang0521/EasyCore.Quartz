@@ -99,11 +99,11 @@ EasyCore.Quartz/
 
 ### 2.1 Component Diagram
 
-![architecture-en](https://github.com/RockyWang0521/EasyCore.Quartz/blob/master/docs/svg/architecture-en.svg)
+![architecture-en](docs/svg/architecture-en.svg)
 
 ### 2.2 Job Lifecycle
 
-![sequence-en](https://github.com/RockyWang0521/EasyCore.Quartz/blob/master/docs/svg/sequence-en.svg)
+![sequence-en](docs/svg/sequence-en.svg)
 
 ### 2.3 Data Flow
 
@@ -277,7 +277,7 @@ Open: `http://localhost:<port>/easy-quartz/` (browser prompts for username/passw
 
 ### 9.1 Preview
 
-![dashboard-preview](https://github.com/RockyWang0521/EasyCore.Quartz/blob/master/docs/svg/dashboard-preview.svg)
+![dashboard-preview](docs/svg/dashboard-preview.svg)
 
 ### 9.2 Pages
 

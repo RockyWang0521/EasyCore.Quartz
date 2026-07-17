@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="360" viewBox="0 0 980 360">
   <rect width="980" height="360" rx="16" fill="#0f1419"/>
-  <text x="40" y="40" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="18" font-weight="700">Job Lifecycle · Discover ’ Execute</text>
+  <text x="40" y="40" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="18" font-weight="700">Job Lifecycle - Discover / Execute</text>
 
   <rect x="30" y="80" width="140" height="70" rx="10" fill="#243044" stroke="#3d9cf0"/>
   <text x="100" y="110" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">1. Attribute</text>
@@ -33,6 +33,6 @@
 
   <rect x="120" y="210" width="740" height="100" rx="12" fill="#1a2332" stroke="#2f3f55"/>
   <text x="490" y="245" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">Runtime control (shared IJobManagementService)</text>
-  <text x="490" y="275" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Dashboard UI  ·  Pause / Resume / Trigger / Delete / Update Cron  ·  REST api/quartz</text>
-  <text x="490" y="295" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">HTTP Jobs · Recurring · Executing · Servers · local auth filters</text>
+  <text x="490" y="275" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Dashboard UI | Pause / Resume / Trigger / Delete / Update Cron | REST api/quartz</text>
+  <text x="490" y="295" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">HTTP Jobs | Recurring | Executing | Servers | local auth filters</text>
 </svg>
