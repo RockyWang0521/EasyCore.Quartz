@@ -374,11 +374,11 @@
         </div>
         <div class="stat-box red">
           <div class="stat-value">${o.recentFailureCount}</div>
-          <div class="stat-label">Failures</div>
+          <div class="stat-label">Failed (window)</div>
         </div>
         <div class="stat-box green">
           <div class="stat-value">${o.recentSuccessCount}</div>
-          <div class="stat-label">Succeeded</div>
+          <div class="stat-label">Succeeded (window)</div>
         </div>
       </div>
 

@@ -31,6 +31,21 @@ public sealed class EasyCoreQuartzOptions
     /// <summary>Maximum in-memory execution history records kept per process.</summary>
     public int HistoryCapacity { get; set; } = 200;
 
+    /// <summary>Timeout for HTTP invoke jobs (<see cref="Jobs.HttpInvokeJob"/>).</summary>
+    public TimeSpan HttpJobTimeout { get; set; } = TimeSpan.FromSeconds(30);
+
+    /// <summary>
+    /// When true (default), HTTP job URLs targeting loopback / private / link-local /
+    /// cloud metadata addresses are rejected unless the host is in <see cref="HttpJobAllowedHosts"/>.
+    /// </summary>
+    public bool HttpJobBlockPrivateNetworks { get; set; } = true;
+
+    /// <summary>
+    /// Hostnames (or IP literals) allowed for HTTP jobs even when private-network blocking is on.
+    /// Comparison is case-insensitive.
+    /// </summary>
+    public IList<string> HttpJobAllowedHosts { get; } = new List<string>();
+
     /// <summary>Throw when job discovery fails to load an assembly. Default false (log and continue).</summary>
     public bool ThrowOnDiscoveryErrors { get; set; } = false;
 

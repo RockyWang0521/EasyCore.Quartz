@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Quartz;
 
 namespace EasyCore.Quartz.Jobs;
@@ -18,14 +19,19 @@ public sealed class HttpInvokeJob : IJob
     public const string HttpClientName = "QuartzHttpClient";
 
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly EasyCoreQuartzOptions _options;
     private readonly ILogger<HttpInvokeJob> _logger;
 
     /// <summary>
     /// Creates a new HTTP invoke job.
     /// </summary>
-    public HttpInvokeJob(IHttpClientFactory httpClientFactory, ILogger<HttpInvokeJob> logger)
+    public HttpInvokeJob(
+        IHttpClientFactory httpClientFactory,
+        IOptions<EasyCoreQuartzOptions> options,
+        ILogger<HttpInvokeJob> logger)
     {
         _httpClientFactory = httpClientFactory;
+        _options = options.Value;
         _logger = logger;
     }
 
@@ -35,6 +41,12 @@ public sealed class HttpInvokeJob : IJob
         var dataMap = context.MergedJobDataMap;
         var url = dataMap.GetString(JobDataUrl)
                   ?? throw new InvalidOperationException("HTTP job requires a Url in JobDataMap.");
+
+        var urlError = HttpJobUrlValidator.Validate(url, _options);
+        if (urlError is not null)
+        {
+            throw new InvalidOperationException(urlError);
+        }
 
         var method = (dataMap.GetString(JobDataMethod) ?? "GET").ToUpperInvariant();
         var body = dataMap.GetString(JobDataBody) ?? string.Empty;

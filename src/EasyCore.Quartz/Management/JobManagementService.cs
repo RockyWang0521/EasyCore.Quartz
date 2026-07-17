@@ -259,6 +259,12 @@ public sealed class JobManagementService : IJobManagementService
             return Fail(input, "Invalid HTTP method. Allowed: GET, POST, PUT, DELETE, PATCH.");
         }
 
+        var urlError = HttpJobUrlValidator.Validate(input.Url, _options);
+        if (urlError is not null)
+        {
+            return Fail(input, urlError);
+        }
+
         if ((method is "POST" or "PUT" or "PATCH") && !string.IsNullOrWhiteSpace(input.Body))
         {
             try

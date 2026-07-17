@@ -8,7 +8,7 @@
 ![Dashboard](https://img.shields.io/badge/Dashboard-English-blueviolet)
 ![DB](https://img.shields.io/badge/DB-MySQL%20%7C%20SQLServer%20%7C%20PG%20%7C%20Oracle-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/Version-9.0.0-blue)
+![Version](https://img.shields.io/badge/Version-8.0.0-blue)
 
 ---
 
@@ -42,7 +42,7 @@
 - [12. 数据库配置详解](#12-数据库配置详解)
 - [13. 集群与并发](#13-集群与并发)
 - [14. Demo 项目](#14-demo-项目)
-- [15. 从 8.x 迁移](#15-从-8x-迁移)
+- [15. 从旧版迁移](#15-从旧版迁移)
 - [16. 生产清单](#16-生产清单)
 - [17. FAQ](#17-faq)
 - [18. License](#18-license)
@@ -456,11 +456,11 @@ dotnet run --project demo/WebApp.Quartz.InMemory
 
 ---
 
-## 15. 从 8.x 迁移
+## 15. 从旧版迁移
 
-**9.0.0** 为破坏性升级：
+**8.0.0** 为破坏性升级（相对早期 `Quarzt*` 命名版本）：
 
-| 8.x | 9.0 |
+| 旧版 | 8.0 |
 |---|---|
 | `QuarztOptions` | `EasyCoreQuartzOptions` |
 | `api/Quarzt` | `api/quartz` |
@@ -496,7 +496,7 @@ A: 有。引用 `EasyCore.Quartz.Dashboard` 并调用 `options.EasyCoreQuartzDas
 A: History 是进程内存储；跨节点请依赖日志系统或自建审计。
 
 **Q: HTTP Job 默认 Method=`GET` 会失败吗？**  
-A: 不会。9.0 已按大小写不敏感校验。
+A: 不会。8.0 已按大小写不敏感校验。
 
 **Q: 如何只扫描业务程序集？**  
 A: `options.AddAssemblyFrom<YourJob>()` 或 `options.AddAssembly(asm)`。

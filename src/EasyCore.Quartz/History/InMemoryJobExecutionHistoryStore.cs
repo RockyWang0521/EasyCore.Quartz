@@ -9,7 +9,11 @@ public interface IJobExecutionHistoryStore
 {
     void Record(JobExecutionHistoryDto entry);
     IReadOnlyList<JobExecutionHistoryDto> GetRecent(int take = 100);
+
+    /// <summary>Success count within the current in-memory window (not lifetime).</summary>
     int SuccessCount { get; }
+
+    /// <summary>Failure count within the current in-memory window (not lifetime).</summary>
     int FailureCount { get; }
 }
 
@@ -27,8 +31,15 @@ public sealed class InMemoryJobExecutionHistoryStore : IJobExecutionHistoryStore
         _capacity = Math.Max(1, capacity);
     }
 
-    public int SuccessCount => Volatile.Read(ref _success);
-    public int FailureCount => Volatile.Read(ref _failure);
+    public int SuccessCount
+    {
+        get { lock (_gate) return _success; }
+    }
+
+    public int FailureCount
+    {
+        get { lock (_gate) return _failure; }
+    }
 
     public void Record(JobExecutionHistoryDto entry)
     {
@@ -37,19 +48,28 @@ public sealed class InMemoryJobExecutionHistoryStore : IJobExecutionHistoryStore
         lock (_gate)
         {
             _entries.AddLast(entry);
+            if (entry.Success)
+            {
+                _success++;
+            }
+            else
+            {
+                _failure++;
+            }
+
             while (_entries.Count > _capacity)
             {
+                var removed = _entries.First!.Value;
                 _entries.RemoveFirst();
+                if (removed.Success)
+                {
+                    _success--;
+                }
+                else
+                {
+                    _failure--;
+                }
             }
-        }
-
-        if (entry.Success)
-        {
-            Interlocked.Increment(ref _success);
-        }
-        else
-        {
-            Interlocked.Increment(ref _failure);
         }
     }
 

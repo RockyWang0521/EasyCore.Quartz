@@ -6,7 +6,7 @@ namespace EasyCoreQuartz.Tests;
 public class HistoryStoreTests
 {
     [Fact]
-    public void History_Store_Keeps_Recent_Entries_And_Counts()
+    public void History_Store_Uses_Sliding_Window_Counts()
     {
         var store = new InMemoryJobExecutionHistoryStore(5);
 
@@ -23,7 +23,8 @@ public class HistoryStoreTests
 
         var recent = store.GetRecent(10);
         Assert.Equal(5, recent.Count);
-        Assert.Equal(4, store.SuccessCount);
-        Assert.Equal(4, store.FailureCount);
+        Assert.Equal(5, store.SuccessCount + store.FailureCount);
+        Assert.Equal(recent.Count(r => r.Success), store.SuccessCount);
+        Assert.Equal(recent.Count(r => !r.Success), store.FailureCount);
     }
 }

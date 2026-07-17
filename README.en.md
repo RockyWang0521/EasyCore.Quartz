@@ -8,7 +8,7 @@
 ![Dashboard](https://img.shields.io/badge/Dashboard-English-blueviolet)
 ![DB](https://img.shields.io/badge/DB-MySQL%20%7C%20SQLServer%20%7C%20PG%20%7C%20Oracle-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/Version-9.0.0-blue)
+![Version](https://img.shields.io/badge/Version-8.0.0-blue)
 
 ---
 
@@ -42,7 +42,7 @@
 - [12. Database Configuration](#12-database-configuration)
 - [13. Clustering & Concurrency](#13-clustering--concurrency)
 - [14. Demo Projects](#14-demo-projects)
-- [15. Migrating from 8.x](#15-migrating-from-8x)
+- [15. Migrating from older versions](#15-migrating-from-older-versions)
 - [16. Production Checklist](#16-production-checklist)
 - [17. FAQ](#17-faq)
 - [18. License](#18-license)
@@ -452,11 +452,11 @@ For DB demos, update `ConnectionStrings:Quartz` in the corresponding `appsetting
 
 ---
 
-## 15. Migrating from 8.x
+## 15. Migrating from older versions
 
-**9.0.0** is a breaking release:
+**8.0.0** is a breaking release (relative to earlier `Quarzt*` naming):
 
-| 8.x | 9.0 |
+| Older | 8.0 |
 |---|---|
 | `QuarztOptions` | `EasyCoreQuartzOptions` |
 | `api/Quarzt` | `api/quartz` |
@@ -492,7 +492,7 @@ A: Yes. Reference `EasyCore.Quartz.Dashboard` and call `options.EasyCoreQuartzDa
 A: History is process-local. Use your logging/audit stack for cross-node history.
 
 **Q: Does default Method=`GET` fail validation?**  
-A: No. Validation is case-insensitive in 9.0.
+A: No. Validation is case-insensitive in 8.0.
 
 **Q: How do I scan only my business assembly?**  
 A: `options.AddAssemblyFrom<YourJob>()` or `options.AddAssembly(asm)`.

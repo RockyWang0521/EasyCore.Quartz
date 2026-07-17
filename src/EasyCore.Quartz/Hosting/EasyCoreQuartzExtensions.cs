@@ -159,7 +159,12 @@ public static class EasyCoreQuartzExtensions
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-        services.AddHttpClient(HttpInvokeJob.HttpClientName);
+        services.AddHttpClient(HttpInvokeJob.HttpClientName, client =>
+        {
+            client.Timeout = options.HttpJobTimeout <= TimeSpan.Zero
+                ? TimeSpan.FromSeconds(30)
+                : options.HttpJobTimeout;
+        });
         services.AddControllers().AddApplicationPart(typeof(EasyCoreQuartzExtensions).Assembly);
 
         options.ApplyServiceConfigurators(services);
