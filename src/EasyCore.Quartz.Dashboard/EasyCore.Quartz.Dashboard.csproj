@@ -12,8 +12,8 @@
     <PackageProjectUrl>https://gitee.com/wzhy-0521/easy-core.-quartz.git</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AssemblyVersion>8.0.0.0</AssemblyVersion>
-    <FileVersion>8.0.1.0</FileVersion>
-    <Version>8.0.0</Version>
+    <FileVersion>8.0.0.0</FileVersion>
+    <Version>8.0.1</Version>
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>

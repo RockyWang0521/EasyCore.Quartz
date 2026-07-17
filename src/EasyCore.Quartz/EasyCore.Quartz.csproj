@@ -15,8 +15,8 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AssemblyVersion>8.0.0.0</AssemblyVersion>
-    <FileVersion>8.0.1.0</FileVersion>
-    <Version>8.0.0</Version>
+    <FileVersion>8.0.0.0</FileVersion>
+    <Version>8.0.1</Version>
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
