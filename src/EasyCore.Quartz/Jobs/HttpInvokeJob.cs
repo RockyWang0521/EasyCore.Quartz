@@ -48,9 +48,9 @@ public sealed class HttpInvokeJob : IJob
             throw new InvalidOperationException(urlError);
         }
 
-        var method = (dataMap.GetString(JobDataMethod) ?? "GET").ToUpperInvariant();
-        var body = dataMap.GetString(JobDataBody) ?? string.Empty;
-        var headersJson = dataMap.GetString(JobDataHeaders);
+        var method = (TryGetString(dataMap, JobDataMethod) ?? "GET").ToUpperInvariant();
+        var body = TryGetString(dataMap, JobDataBody) ?? string.Empty;
+        var headersJson = TryGetString(dataMap, JobDataHeaders);
 
         var client = _httpClientFactory.CreateClient(HttpClientName);
         using var request = new HttpRequestMessage(new HttpMethod(method), url);
@@ -92,5 +92,15 @@ public sealed class HttpInvokeJob : IJob
             "HTTP job {Job} completed with status {StatusCode}",
             context.JobDetail.Key,
             (int)response.StatusCode);
+    }
+
+    private static string? TryGetString(JobDataMap dataMap, string key)
+    {
+        if (!dataMap.ContainsKey(key))
+        {
+            return null;
+        }
+
+        return dataMap.GetString(key);
     }
 }

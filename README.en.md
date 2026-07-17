@@ -264,7 +264,10 @@ Open: `http://localhost:<port>/easy-quartz/` (browser prompts for username/passw
 | `[EasyCoreDisallowConcurrentExecution]` | Prevent overlapping runs |
 | `AddAssembly` / `AddAssemblyFrom<T>` | Explicit discovery |
 | `AutoCreateSchema` | Idempotent DDL on startup (disable in prod) |
-| `HistoryCapacity` | In-memory history size (default 200) |
+| `HistoryCapacity` | In-memory history ring buffer size (default 200); Overview success/failure counts are **window** stats |
+| `HttpJobTimeout` | HTTP job timeout (default 30s) |
+| `HttpJobBlockPrivateNetworks` | Default `true` — blocks loopback/private/metadata hosts |
+| `HttpJobAllowedHosts` | HTTP job host allow-list (e.g. localhost) |
 | `TablePrefix` | Default `QRTZ_` (must match DDL) |
 | `MaxConcurrency` | Thread pool size; `0` = auto |
 
@@ -288,7 +291,7 @@ Open: `http://localhost:<port>/easy-quartz/` (browser prompts for username/passw
 | **History** | 📜 | Recent executions (node-local memory) |
 | **Servers** | 🖥️ | Scheduler name / InstanceId / Store |
 
-> ⚠️ History is a **process-local ring buffer**, not a shared cluster audit log.
+> ⚠️ History is a **process-local ring buffer**. Overview success/failure counts reflect the current window only (not lifetime totals) and are not shared across nodes.
 
 ### 9.3 Authorization (HTTP Basic Auth)
 
@@ -340,7 +343,7 @@ Create via Dashboard **HTTP Jobs** or REST:
 {
   "jobName": "PingApi",
   "jobGroup": "DEFAULT",
-  "url": "http://localhost:5101/demo/ping",
+  "url": "https://example.com/demo/ping",
   "method": "GET",
   "cron": "0/30 * * * * ?",
   "headers": { "X-Trace": "demo" },
@@ -353,7 +356,16 @@ Create via Dashboard **HTTP Jobs** or REST:
 |---|---|
 | Method | `GET` / `POST` / `PUT` / `DELETE` / `PATCH` (case-insensitive) |
 | Body | JSON validated for POST/PUT/PATCH |
+| Timeout | `HttpJobTimeout` (default 30s) |
+| SSRF | Blocks loopback/private/link-local/metadata by default; allow via `HttpJobAllowedHosts` |
 | Failure | Non-2xx ⇒ exception ⇒ History failure |
+
+To call a local demo API, allow the host explicitly:
+
+```csharp
+options.HttpJobAllowedHosts.Add("localhost");
+options.HttpJobAllowedHosts.Add("127.0.0.1");
+```
 
 ---
 
@@ -473,7 +485,8 @@ For DB demos, update `ConnectionStrings:Quartz` in the corresponding `appsetting
 - [ ] Use a strong dashboard password (never ship demo credentials publicly)
 - [ ] Set `AutoCreateSchema = false` with reviewed migrations
 - [ ] Keep connection strings in a secret store
-- [ ] Monitor logs and History failure counts
+- [ ] Monitor logs and History **window** failure counts (not lifetime totals)
+- [ ] HTTP jobs: review `HttpJobAllowedHosts` / egress policy; do not casually disable private-network blocking
 - [ ] Set `MaxConcurrency` explicitly under heavy load
 - [ ] Validate cron expressions before deploy
 - [ ] Multi-node setups must share the same store and table prefix
@@ -489,7 +502,10 @@ A: The browser prompts for Basic Auth. Use the configured `Username` / `Password
 A: Yes. Reference `EasyCore.Quartz.Dashboard` and call `options.EasyCoreQuartzDashboard(...)`.
 
 **Q: Why is History different across nodes?**  
-A: History is process-local. Use your logging/audit stack for cross-node history.
+A: History is a process-local ring buffer; Overview success/failure counts cover the current window only. Use your logging/audit stack for cross-node history.
+
+**Q: HTTP job to localhost is rejected?**  
+A: SSRF protection is on by default. Add the host to `options.HttpJobAllowedHosts`, or disable `HttpJobBlockPrivateNetworks` only in controlled environments.
 
 **Q: Does default Method=`GET` fail validation?**  
 A: No. Validation is case-insensitive in 8.0.

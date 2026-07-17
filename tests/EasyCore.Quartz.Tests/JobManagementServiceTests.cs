@@ -20,7 +20,7 @@ public class JobManagementServiceTests
             {
                 JobName = "HttpCase",
                 JobGroup = "TEST",
-                Url = "http://127.0.0.1/",
+                Url = "https://example.com/",
                 Method = "GeT",
                 Cron = "0 0 0 1 1 ? 2099"
             });
@@ -30,12 +30,23 @@ public class JobManagementServiceTests
             var invalid = await management.AddOrUpdateHttpJobAsync(new HttpJobInputDto
             {
                 JobName = "HttpBad",
-                Url = "http://127.0.0.1/",
+                Url = "https://example.com/",
                 Method = "TRACE",
                 Cron = "0 0 0 1 1 ? 2099"
             });
 
             Assert.False(invalid.Success);
+
+            var ssrf = await management.AddOrUpdateHttpJobAsync(new HttpJobInputDto
+            {
+                JobName = "HttpSsrf",
+                Url = "http://127.0.0.1/",
+                Method = "GET",
+                Cron = "0 0 0 1 1 ? 2099"
+            });
+
+            Assert.False(ssrf.Success);
+            Assert.Contains("blocked", ssrf.Message, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {
