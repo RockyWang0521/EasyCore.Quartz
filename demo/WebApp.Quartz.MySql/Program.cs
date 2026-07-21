@@ -1,3 +1,4 @@
+using EasyCore.Invocation;
 using EasyCore.Quartz;
 using WebApp.Quartz.MySql.Jobs;
 
@@ -29,6 +30,8 @@ public class Program
                 dash.Password = "admin123";
             });
         });
+
+        builder.Services.AddEasyCoreInvocation();
 
         var app = builder.Build();
 

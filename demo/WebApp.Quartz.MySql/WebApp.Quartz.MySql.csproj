@@ -4,6 +4,7 @@
     <ProjectReference Include="..\..\src\EasyCore.Quartz\EasyCore.Quartz.csproj" />
     <ProjectReference Include="..\..\src\EasyCore.Quartz.Dashboard\EasyCore.Quartz.Dashboard.csproj" />
     <ProjectReference Include="..\..\src\EasyCore.Quartz.MySql\EasyCore.Quartz.MySql.csproj" />
+    <ProjectReference Include="..\..\..\EasyCore.Invocation\src\EasyCore.Invocation\EasyCore.Invocation.csproj" />
   </ItemGroup>
 
   <ItemGroup>
